@@ -13,21 +13,58 @@
 
         <TextView
             style="@style/title_text"
-            android:text="Task list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:ellipsize="end"
+            android:text="@string/to_do_list" />
 
         <TextView
             style="@style/title_text"
-            android:text="In progress..."
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:ellipsize="end"
+            android:text="@string/in_progress" />
 
         <TextView
             style="@style/title_text"
-            android:text="Well Done!"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:ellipsize="end"
+            android:text="@string/well_done" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ListView
+            android:id="@+id/todo_task_list"
+            style="@style/task_list_view"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:text="@string/to_do_list" />
+
+        <ListView
+            android:id="@+id/progress_task_list"
+            style="@style/task_list_view"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:text="@string/in_progress" />
+
+        <ListView
+            android:id="@+id/done_task_list"
+            style="@style/task_list_view"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:text="@string/well_done" />
 
     </LinearLayout>
 
