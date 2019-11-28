@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/todo_task_list"
             style="@style/task_list_view"
             android:layout_width="1dp"
@@ -58,7 +58,7 @@
 
         <include layout="@layout/divider_vertical" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/progress_task_list"
             style="@style/task_list_view"
             android:layout_width="1dp"
@@ -68,7 +68,7 @@
 
         <include layout="@layout/divider_vertical" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/done_task_list"
             style="@style/task_list_view"
             android:layout_width="1dp"

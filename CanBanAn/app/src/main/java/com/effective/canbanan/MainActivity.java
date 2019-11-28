@@ -1,17 +1,14 @@
 package com.effective.canbanan;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
-import com.effective.canbanan.viewmodel.ListViewLayoutAdapter;
-
-import java.util.List;
+import com.effective.canbanan.viewmodel.TaskListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,20 +23,23 @@ public class MainActivity extends AppCompatActivity {
     private void updateData() {
         TasksDataModel.instance.enumerate();
 
-        //TODO fill layout
-        ListView listTodo = findViewById(R.id.todo_task_list);
+        RecyclerView listTodo = findViewById(R.id.todo_task_list);
         addItemsByLayout(listTodo, TaskStatus.TO_DO);
 
-        ListView listProgress = findViewById(R.id.progress_task_list);
+        RecyclerView listProgress = findViewById(R.id.progress_task_list);
         addItemsByLayout(listProgress, TaskStatus.IN_PROGRESS);
 
-        ListView listDone = findViewById(R.id.done_task_list);
+        RecyclerView listDone = findViewById(R.id.done_task_list);
         addItemsByLayout(listDone, TaskStatus.DONE);
     }
 
-    private void addItemsByLayout(ListView todo, TaskStatus taskStatus) {
-        List<TaskItem> tasks = TasksDataModel.instance.getTasks(taskStatus);
-        ArrayAdapter<TaskItem> arrayAdapter = new ListViewLayoutAdapter(this, tasks, taskStatus);
-        todo.setAdapter(arrayAdapter);
+    private void addItemsByLayout(RecyclerView recyclerView, TaskStatus taskStatus) {
+        TaskListAdapter adapter = new TaskListAdapter(taskStatus);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        adapter.updateData();
     }
 }
