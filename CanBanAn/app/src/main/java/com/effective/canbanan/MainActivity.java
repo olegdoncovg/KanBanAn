@@ -1,16 +1,16 @@
 package com.effective.canbanan;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
+import com.effective.canbanan.viewmodel.ListViewLayoutAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,32 +28,18 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO fill layout
         ListView listTodo = findViewById(R.id.todo_task_list);
-        addItemsAsStrings(listTodo, TasksDataModel.instance.getTasks(TaskStatus.TO_DO));
+        addItemsByLayout(listTodo, TaskStatus.TO_DO);
 
         ListView listProgress = findViewById(R.id.progress_task_list);
-        addItemsAsStrings(listProgress, TasksDataModel.instance.getTasks(TaskStatus.IN_PROGRESS));
+        addItemsByLayout(listProgress, TaskStatus.IN_PROGRESS);
 
         ListView listDone = findViewById(R.id.done_task_list);
-        addItemsAsStrings(listDone, TasksDataModel.instance.getTasks(TaskStatus.DONE));
-
+        addItemsByLayout(listDone, TaskStatus.DONE);
     }
 
-    private void addItemsAsStrings(ListView todo, List<TaskItem> tasks) {
-        // Instanciating an array list (you don't need to do this,
-        // you already have yours).
-        List<String> your_array_list = new ArrayList<String>();
-        for(TaskItem item:tasks) {
-            your_array_list.add(item.name);
-        }
-
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                your_array_list );
-
+    private void addItemsByLayout(ListView todo, TaskStatus taskStatus) {
+        List<TaskItem> tasks = TasksDataModel.instance.getTasks(taskStatus);
+        ArrayAdapter<TaskItem> arrayAdapter = new ListViewLayoutAdapter(this, tasks, taskStatus);
         todo.setAdapter(arrayAdapter);
     }
 }

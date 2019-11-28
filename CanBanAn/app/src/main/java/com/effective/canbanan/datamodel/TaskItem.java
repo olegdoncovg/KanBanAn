@@ -14,4 +14,8 @@ public class TaskItem {
         this.tomeToStart = tomeToStart;
         this.status = status;
     }
+
+    public String getCurrentTime() {
+        return "Time 0:0";
+    }
 }
