@@ -35,5 +35,6 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
     public void bind(TaskItem taskItem) {
         textTitle.setText(taskItem.name);
         textTime.setText(taskItem.getCurrentTime());
+        rowView.setBackgroundColor(rowView.getContext().getColor(taskItem.status.getColorId()));
     }
 }
