@@ -10,12 +10,13 @@ public class TasksDataModel {
     private final List<TaskItem> mTasks = new ArrayList<>();
 
     public static final TasksDataModel instance = new TasksDataModel();
+    private static final long debugTime1 = 1575561866521L;
 
     public void enumerate() {
-        mTasks.add(new TaskItem(100, "Go ot work", 0, 0, TaskStatus.DONE));
-        mTasks.add(new TaskItem(101, "Go ot home", 0, 0, TaskStatus.TO_DO));
+        mTasks.add(new TaskItem(100, "Go ot work", 3000, 0, TaskStatus.DONE));
+        mTasks.add(new TaskItem(101, "Go ot home", 2000, 0, TaskStatus.TO_DO));
         mTasks.add(new TaskItem(102, "Lunch", 0, 0, TaskStatus.TO_DO));
-        mTasks.add(new TaskItem(103, "Do KanBanAn", 0, 0, TaskStatus.IN_PROGRESS));
+        mTasks.add(new TaskItem(103, "Do KanBanAn", 0, debugTime1, TaskStatus.IN_PROGRESS));
 
     }
 

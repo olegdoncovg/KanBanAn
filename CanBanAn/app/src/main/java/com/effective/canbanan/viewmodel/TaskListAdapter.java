@@ -14,6 +14,7 @@ import com.effective.canbanan.datamodel.TasksDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     private static final String TAG = TaskListAdapter.class.getSimpleName();
@@ -47,5 +48,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     @Override
     public int getItemCount() {
         return values.size();
+    }
+
+    //Probably will be applied only for TaskStatus.IN_PROGRESS
+    public Consumer<Long> getTimeUpdateListener() {
+        return new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) {
+                notifyDataSetChanged();
+            }
+        };
     }
 }

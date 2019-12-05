@@ -20,9 +20,14 @@ public class MainActivity extends AppCompatActivity {
         updateData();
     }
 
-    private void updateData() {
-        TasksDataModel.instance.enumerate();
+    private final TickTimer tickTimer = new TickTimer();
 
+    private void updateData() {
+        //Clear
+        TasksDataModel.instance.enumerate();
+        tickTimer.clear();
+
+        //Update UI
         RecyclerView listTodo = findViewById(R.id.todo_task_list);
         addItemsByLayout(listTodo, TaskStatus.TO_DO);
 
@@ -31,10 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView listDone = findViewById(R.id.done_task_list);
         addItemsByLayout(listDone, TaskStatus.DONE);
+
+        //Timer
+        tickTimer.start(this);
     }
 
     private void addItemsByLayout(RecyclerView recyclerView, TaskStatus taskStatus) {
         TaskListAdapter adapter = new TaskListAdapter(taskStatus);
+        if (taskStatus == TaskStatus.IN_PROGRESS) {
+            tickTimer.addTickListener(adapter.getTimeUpdateListener());
+        }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
