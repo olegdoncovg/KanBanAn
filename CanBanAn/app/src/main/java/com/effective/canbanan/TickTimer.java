@@ -25,16 +25,13 @@ public class TickTimer {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final long time = System.currentTimeMillis();
-                        for (Consumer<Long> longConsumer : timeUpdateListeners) {
-                            if (longConsumer == null) {
-                                continue;
-                            }
-                            longConsumer.accept(time);
+                activity.runOnUiThread(() -> {
+                    final long time = System.currentTimeMillis();
+                    for (Consumer<Long> longConsumer : timeUpdateListeners) {
+                        if (longConsumer == null) {
+                            continue;
                         }
+                        longConsumer.accept(time);
                     }
                 });
             }

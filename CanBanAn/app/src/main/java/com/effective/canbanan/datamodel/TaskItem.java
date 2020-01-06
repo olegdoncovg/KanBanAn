@@ -1,10 +1,20 @@
 package com.effective.canbanan.datamodel;
 
+import android.util.Log;
+
 public class TaskItem {
+    private static final String TAG = TaskItem.class.getSimpleName();
     public final int id;
     public final String name;
-    public final long timeTotal;//Time summarise with timeToStart=0
-    public final long timeToStart;//Dynamic part of time = System.currentTimeMillis() - timeToStart
+    /**
+     * Time summarise with timeToStart=0
+     */
+    public final long timeTotal;
+    /**
+     * Dynamic part of time = System.currentTimeMillis() - timeToStart
+     * timeToStart=0 if status!= IN_PROGRESS
+     */
+    public final long timeToStart;
     public final TaskStatus status;
 
     public TaskItem(int id, String name, long timeTotal, long timeToStart, TaskStatus status) {
@@ -13,6 +23,27 @@ public class TaskItem {
         this.timeTotal = timeTotal;
         this.timeToStart = timeToStart;
         this.status = status;
+    }
+
+    public TaskItem(TaskItem task, TaskStatus newStatus) {
+        long timeTotal = task.timeTotal;
+        long timeToStart = task.timeToStart;
+
+        if (task.status != newStatus) {
+            if (timeToStart != 0) {
+                long timeDiff = System.currentTimeMillis() - timeToStart;
+                timeTotal += timeDiff;
+                Log.d(TAG, "construct: timeTotal=" + longToTime(timeTotal) +
+                        ", timeDiff=" + longToTime(timeDiff));
+            }
+            timeToStart = newStatus == TaskStatus.IN_PROGRESS ? System.currentTimeMillis() : 0;
+        }
+
+        this.id = task.id;
+        this.name = task.name;
+        this.timeTotal = timeTotal;
+        this.timeToStart = timeToStart;
+        this.status = newStatus;
     }
 
     public String getCurrentTime() {

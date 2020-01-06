@@ -1,6 +1,7 @@
 package com.effective.canbanan;
 
 import android.os.Bundle;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
+import com.effective.canbanan.viewmodel.Dropper;
 import com.effective.canbanan.viewmodel.TaskListAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,10 +26,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateData() {
         //Clear
+        Dropper.instance.init(findViewById(R.id.parentView), this::updateUI);
         TasksDataModel.instance.enumerate();
         tickTimer.clear();
 
         //Update UI
+        updateUI();
+
+        //Timer
+        tickTimer.start(this);
+    }
+
+    private void updateUI() {
         RecyclerView listTodo = findViewById(R.id.todo_task_list);
         addItemsByLayout(listTodo, TaskStatus.TO_DO);
 
@@ -36,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView listDone = findViewById(R.id.done_task_list);
         addItemsByLayout(listDone, TaskStatus.DONE);
-
-        //Timer
-        tickTimer.start(this);
     }
 
     private void addItemsByLayout(RecyclerView recyclerView, TaskStatus taskStatus) {

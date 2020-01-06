@@ -1,13 +1,10 @@
 package com.effective.canbanan.viewmodel;
 
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.effective.canbanan.R;
 import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
@@ -34,10 +31,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View rowView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.list_view_item, parent, false);
-        TaskViewHolder vh = new TaskViewHolder(rowView);
-        return vh;
+        return TaskViewHolder.newInstance(parent, viewType);
     }
 
     @Override
@@ -50,13 +44,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
         return values.size();
     }
 
+//    @Override
+//    public int getItemViewType(int position) {
+//        return ItemType.TASK.ordinal();
+//    }
+
     //Probably will be applied only for TaskStatus.IN_PROGRESS
     public Consumer<Long> getTimeUpdateListener() {
-        return new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) {
-                notifyDataSetChanged();
-            }
-        };
+        return currentTime -> notifyDataSetChanged();
     }
+
+//    public enum ItemType {
+//        TASK
+//    }
 }

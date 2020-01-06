@@ -1,90 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/title_text"
-            android:layout_width="1dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:ellipsize="end"
-            android:text="@string/to_do_list" />
+            android:orientation="horizontal">
 
-        <include layout="@layout/divider_vertical" />
+            <TextView
+                android:id="@+id/header_to_do_list"
+                style="@style/title_text"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:ellipsize="end"
+                android:text="@string/to_do_list" />
 
-        <TextView
-            style="@style/title_text"
-            android:layout_width="1dp"
+            <include layout="@layout/divider_vertical" />
+
+            <TextView
+                android:id="@+id/header_in_progress"
+                style="@style/title_text"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:ellipsize="end"
+                android:text="@string/in_progress" />
+
+            <include layout="@layout/divider_vertical" />
+
+            <TextView
+                android:id="@+id/header_well_done"
+                style="@style/title_text"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:ellipsize="end"
+                android:text="@string/well_done" />
+
+        </LinearLayout>
+
+        <include layout="@layout/divider_horizontal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:ellipsize="end"
-            android:text="@string/in_progress" />
+            android:orientation="horizontal">
 
-        <include layout="@layout/divider_vertical" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/todo_task_list"
+                style="@style/task_list_view"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:text="@string/to_do_list" />
 
-        <TextView
-            style="@style/title_text"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:ellipsize="end"
-            android:text="@string/well_done" />
+            <include layout="@layout/divider_vertical" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/progress_task_list"
+                style="@style/task_list_view"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:text="@string/in_progress" />
+
+            <include layout="@layout/divider_vertical" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/done_task_list"
+                style="@style/task_list_view"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:text="@string/well_done" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/divider_horizontal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/todo_task_list"
-            style="@style/task_list_view"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="@string/to_do_list" />
-
-        <include layout="@layout/divider_vertical" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/progress_task_list"
-            style="@style/task_list_view"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="@string/in_progress" />
-
-        <include layout="@layout/divider_vertical" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/done_task_list"
-            style="@style/task_list_view"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="@string/well_done" />
-
-    </LinearLayout>
-
-    <!--    <TextView-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:text="Hello World!"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--        app:layout_constraintRight_toRightOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-</LinearLayout>
+</FrameLayout>
