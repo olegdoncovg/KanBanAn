@@ -1,7 +1,14 @@
 package com.effective.canbanan.viewmodel;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+
+import androidx.annotation.NonNull;
 
 import com.effective.canbanan.BuildConfig;
 import com.effective.canbanan.R;
@@ -36,22 +43,52 @@ public class Dropper {
 //        this.dropItemSurface.setOnTouchListener(onTouchListener);
 
         parentView.findViewById(R.id.header_to_do_list).setOnClickListener(v -> {
-            changeTaskCategory(TaskStatus.TO_DO);
+            onClickTaskCategory(v, TaskStatus.TO_DO);
         });
 
         parentView.findViewById(R.id.header_in_progress).setOnClickListener(v -> {
-            changeTaskCategory(TaskStatus.IN_PROGRESS);
+            onClickTaskCategory(v, TaskStatus.IN_PROGRESS);
         });
 
         parentView.findViewById(R.id.header_well_done).setOnClickListener(v -> {
-            changeTaskCategory(TaskStatus.DONE);
+            onClickTaskCategory(v, TaskStatus.DONE);
         });
     }
 
-    private void changeTaskCategory(TaskStatus status) {
-        if (state != DropState.HOVERING) {
+    private void onClickTaskCategory(View v, TaskStatus status) {
+        if (v == null) {
+            Log.e(TAG, "onClickTaskCategory: v=null");
             return;
         }
+        if (state == DropState.HOVERING) {
+            changeTaskCategory(status);
+        } else {
+            showPopupMenu(v, status);
+        }
+    }
+
+
+    private void showPopupMenu(@NonNull View v, TaskStatus status) {
+        Activity activity = (Activity) v.getContext();
+        if (activity == null) {
+            Log.e(TAG, "showPopupMenu: activity=null");
+            return;
+        }
+
+        Context wrapper = new ContextThemeWrapper(activity, R.style.popup_menu_style);
+        PopupMenu popupMenu = new PopupMenu(wrapper, v);
+        popupMenu.inflate(R.menu.header_menu);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.item1) {
+                //TODO do some
+                return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
+
+    private void changeTaskCategory(TaskStatus status) {
         state = DropState.PUT_IN_NEW_AREA;
 
         if (TasksDataModel.instance.changeTaskCategory(catchedTaskItem, status)) {

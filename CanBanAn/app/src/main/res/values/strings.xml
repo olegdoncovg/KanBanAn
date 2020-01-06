@@ -3,4 +3,5 @@
     <string name="to_do_list">To do list</string>
     <string name="in_progress">In progress...</string>
     <string name="well_done">Well Done!</string>
+    <string name="add_item">Add new Task</string>
 </resources>
