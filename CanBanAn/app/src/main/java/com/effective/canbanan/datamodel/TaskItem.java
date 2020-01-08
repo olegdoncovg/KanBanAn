@@ -12,27 +12,27 @@ public class TaskItem {
     public final int id;
     public final String name;
     /**
-     * Time summarise with timeToStart=0
+     * Time summarise with timeStartActive=0
      */
     public final long timeTotal;
     /**
-     * Dynamic part of time = System.currentTimeMillis() - timeToStart
-     * timeToStart=0 if status!= IN_PROGRESS
+     * Dynamic part of time = System.currentTimeMillis() - timeStartActive
+     * timeStartActive=0 if status!= IN_PROGRESS
      */
-    public final long timeToStart;
+    public final long timeStartActive;
     public final TaskStatus status;
 
     public TaskItem(int id, String name, long timeTotal, long timeToStart, TaskStatus status) {
         this.id = id;
         this.name = name;
         this.timeTotal = timeTotal;
-        this.timeToStart = timeToStart;
+        this.timeStartActive = timeToStart;
         this.status = status;
     }
 
     public TaskItem(TaskItem task, TaskStatus newStatus) {
         long timeTotal = task.timeTotal;
-        long timeToStart = task.timeToStart;
+        long timeToStart = task.timeStartActive;
 
         if (task.status != newStatus) {
             if (timeToStart != 0) {
@@ -47,16 +47,16 @@ public class TaskItem {
         this.id = task.id;
         this.name = task.name;
         this.timeTotal = timeTotal;
-        this.timeToStart = timeToStart;
+        this.timeStartActive = timeToStart;
         this.status = newStatus;
     }
 
     public String getCurrentTime(Context context) {
-        if (timeToStart == 0) {
+        if (timeStartActive == 0) {
             return longToTime(context, timeTotal);
         }
-        final long time = System.currentTimeMillis() - timeToStart;
-        return longToTime(context, time);
+        final long time = System.currentTimeMillis() - timeStartActive;
+        return longToTime(context, timeTotal) + "\n" + longToTime(context, time);
     }
 
     private String longToTime(@Nullable Context context, long time) {

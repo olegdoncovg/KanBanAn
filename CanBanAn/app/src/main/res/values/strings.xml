@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">CanBanAn</string>
     <string name="to_do_list">To do list</string>
-    <string name="in_progress">In progress...</string>
+    <string name="in_progress">In progress…</string>
     <string name="well_done">Well Done!</string>
     <string name="add_item">Add new Task</string>
+    <string name="remove_all_item">Remove all items</string>
+    <string name="ok">Okay</string>
+    <string name="cancel">Cancel</string>
     <string name="days">days</string>
 </resources>

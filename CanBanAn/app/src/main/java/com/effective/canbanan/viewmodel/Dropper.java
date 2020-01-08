@@ -15,6 +15,7 @@ import com.effective.canbanan.R;
 import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
+import com.effective.canbanan.util.DialogUtil;
 
 public class Dropper {
     private static final String TAG = Dropper.class.getSimpleName();
@@ -79,8 +80,15 @@ public class Dropper {
         PopupMenu popupMenu = new PopupMenu(wrapper, v);
         popupMenu.inflate(R.menu.header_menu);
         popupMenu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.item1) {
+            if (item.getItemId() == R.id.addNewTask) {
                 //TODO do some
+                return true;
+            }
+            if (item.getItemId() == R.id.removeAll) {
+                DialogUtil.showYesNoDialog(activity, R.string.remove_all_item, () -> {
+                    TasksDataModel.instance.removeTasks(status);
+                    updateUI.run();
+                }, null);
                 return true;
             }
             return false;
@@ -109,7 +117,7 @@ public class Dropper {
     }
 
 
-    public void onItemLongClick(TaskViewHolder viewHolderToHover, TaskItem taskItem) {
+    public void onItemSelectToMove(TaskViewHolder viewHolderToHover, TaskItem taskItem) {
         clear();
         state = DropState.LONG_CLICK;
         catchedTaskItem = taskItem;
@@ -126,7 +134,7 @@ public class Dropper {
 //        hoverTaskHolder.moveHolderPosition(startPoint);
 
         state = DropState.HOVERING;
-        Log.d(TAG, "onItemLongClick: state=" + state);
+        Log.d(TAG, "onItemSelectToMove: state=" + state);
     }
 
 //    public void onItemTouchEvent(View v, MotionEvent event, int taskId) {

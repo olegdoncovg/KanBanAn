@@ -2,7 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/item1"
+        android:id="@+id/addNewTask"
         android:title="@string/add_item"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/removeAll"
+        android:title="@string/remove_all_item"
         app:showAsAction="always" />
 </menu>

@@ -52,7 +52,7 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 //            }
 //        });
         rowView.setOnLongClickListener(v -> {
-            Dropper.instance.onItemLongClick(TaskViewHolder.this, taskItem);
+            Dropper.instance.onItemSelectToMove(TaskViewHolder.this, taskItem);
             return false;
         });
     }

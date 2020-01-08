@@ -1,5 +1,7 @@
 package com.effective.canbanan.datamodel;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,7 @@ public class TasksDataModel {
         return (int) System.currentTimeMillis();
     }
 
+    @NonNull
     public List<TaskItem> getTasks(final TaskStatus status) {
         List<TaskItem> tasks = new ArrayList<>();
         for (TaskItem item : mTasks.values()) {
@@ -48,5 +51,12 @@ public class TasksDataModel {
 
     public boolean changeTaskCategory(TaskItem taskItem, TaskStatus status) {
         return add(taskItem, status) != null;
+    }
+
+    public void removeTasks(TaskStatus status) {
+        List<TaskItem> toRemove = getTasks(status);
+        for (TaskItem item : toRemove) {
+            mTasks.remove(item.id);
+        }
     }
 }
