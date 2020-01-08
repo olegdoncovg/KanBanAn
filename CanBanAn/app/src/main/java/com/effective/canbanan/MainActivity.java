@@ -1,16 +1,23 @@
 package com.effective.canbanan;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.widget.PopupMenu;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
+import com.effective.canbanan.util.DialogUtil;
 import com.effective.canbanan.viewmodel.Dropper;
 import com.effective.canbanan.viewmodel.TaskListAdapter;
 
@@ -30,6 +37,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final TickTimer tickTimer = new TickTimer();
+
+    public void showItemContextMenu(@NonNull View v, TaskItem taskItem) {
+        Activity activity = this;
+
+        Context wrapper = new ContextThemeWrapper(activity, R.style.popup_menu_style);
+        PopupMenu popupMenu = new PopupMenu(wrapper, v);
+        popupMenu.inflate(R.menu.item_menu);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.removeItem) {
+                DialogUtil.showYesNoDialog(activity, R.string.remove_all_item, () -> {
+                    TasksDataModel.instance.removeTask(taskItem);
+                    updateUI();
+                }, null);
+                return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
 
     private void updateData() {
         //Clear
@@ -72,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addItemsByLayout(RecyclerView recyclerView, TaskStatus taskStatus) {
-        TaskListAdapter adapter = new TaskListAdapter(taskStatus);
+        TaskListAdapter adapter = new TaskListAdapter(taskStatus, this::showItemContextMenu);
         if (taskStatus == TaskStatus.IN_PROGRESS) {
             tickTimer.addTickListener(adapter.getTimeUpdateListener());
         }

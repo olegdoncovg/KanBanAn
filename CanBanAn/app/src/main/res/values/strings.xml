@@ -10,4 +10,7 @@
     <string name="days">days</string>
     <string name="enter_task_name">Enter task name</string>
     <string name="empty_string">Empty field</string>
+    <string name="remove_task">Remove task</string>
+<!--    <string name="move_task_to_category">Move task to category</string>-->
+<!--    <string name="select_category_to_move_in">Select category to move in</string>-->
 </resources>

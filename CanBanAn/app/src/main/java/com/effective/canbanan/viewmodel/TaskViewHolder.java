@@ -1,6 +1,7 @@
 package com.effective.canbanan.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,36 +13,43 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.effective.canbanan.R;
 import com.effective.canbanan.datamodel.TaskItem;
 
+import java.util.function.BiConsumer;
+
 class TaskViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = TaskViewHolder.class.getSimpleName();
 
     public final TextView textTitle;
     public final TextView textTime;
     @NonNull
-    public final View parentView;
+    public final View mainView;
     private TaskItem taskItem;
-    private boolean isActive;
+//    private boolean isActive;
 
-    public static TaskViewHolder newInstance(@NonNull ViewGroup parent, int viewType) {
+    public static TaskViewHolder newInstance(@NonNull ViewGroup parent, int viewType,
+                                             BiConsumer<View, TaskItem> showItemContextMenu) {
         View rowView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_view_item, parent, false);
-        TaskViewHolder vh = new TaskViewHolder(rowView);
-        return vh;
+        return new TaskViewHolder(rowView, showItemContextMenu);
     }
 
-    public TaskViewHolder(@NonNull final View rowView) {
+    public TaskViewHolder(@NonNull final View rowView, BiConsumer<View, TaskItem> showItemContextMenu) {
         super(rowView);
         textTitle = rowView.findViewById(R.id.title);
         textTime = rowView.findViewById(R.id.time);
-        this.parentView = rowView;
+        this.mainView = rowView;
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isActive = !isActive;
-                rowView.setBackgroundColor(isActive ?
-                        rowView.getContext().getColor(R.color.bg_item_active) :
-                        rowView.getContext().getColor(R.color.bg_item_passive));
+//                isActive = !isActive;
+//                rowView.setBackgroundColor(isActive ?
+//                        rowView.getContext().getColor(R.color.bg_item_active) :
+//                        rowView.getContext().getColor(R.color.bg_item_passive));
+                if (showItemContextMenu != null) {
+                    showItemContextMenu.accept(rowView, taskItem);
+                } else {
+                    Log.e(TAG, "TaskViewHolder: showItemContextMenu=null");
+                }
             }
         });
 //        rowView.setOnTouchListener(new View.OnTouchListener() {
@@ -62,21 +70,21 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 
         textTitle.setText(taskItem.name);
         textTime.setText(taskItem.getCurrentTime(context));
-        parentView.setBackgroundColor(parentView.getContext().getColor(taskItem.status.getColorId()));
+        mainView.setBackgroundColor(mainView.getContext().getColor(taskItem.status.getColorId()));
     }
 
     public void setTransparency(boolean transparent) {
-        parentView.setAlpha(transparent ? 0.2f : 1f);
+        mainView.setAlpha(transparent ? 0.2f : 1f);
     }
 
 //    public void setParamsAnsRoleFrom(TaskViewHolder roleFrom) {
 //        roleFrom.setTransparency(true);
-//        parentView.getLayoutParams().width = roleFrom.parentView.getWidth();
-//        parentView.getLayoutParams().height = roleFrom.parentView.getHeight();
+//        mainView.getLayoutParams().width = roleFrom.mainView.getWidth();
+//        mainView.getLayoutParams().height = roleFrom.mainView.getHeight();
 //    }
 //
 //    public void moveHolderPosition(PointF position) {
-//        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) parentView.getLayoutParams();
+//        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mainView.getLayoutParams();
 //        p.setMargins((int) (position.x), (int) (position.y), p.rightMargin, p.bottomMargin);
 //    }
 //

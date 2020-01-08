@@ -63,4 +63,8 @@ public class TasksDataModel {
     public void addNewTask(String taskName, TaskStatus status) {
         add(generateId(), taskName, 0, 0, status);
     }
+
+    public void removeTask(TaskItem item) {
+        mTasks.remove(item.id);
+    }
 }
