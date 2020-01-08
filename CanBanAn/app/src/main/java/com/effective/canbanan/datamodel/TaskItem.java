@@ -1,6 +1,11 @@
 package com.effective.canbanan.datamodel;
 
+import android.content.Context;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+
+import com.effective.canbanan.R;
 
 public class TaskItem {
     private static final String TAG = TaskItem.class.getSimpleName();
@@ -33,8 +38,8 @@ public class TaskItem {
             if (timeToStart != 0) {
                 long timeDiff = System.currentTimeMillis() - timeToStart;
                 timeTotal += timeDiff;
-                Log.d(TAG, "construct: timeTotal=" + longToTime(timeTotal) +
-                        ", timeDiff=" + longToTime(timeDiff));
+                Log.d(TAG, "construct: timeTotal=" + longToTime(null, timeTotal) +
+                        ", timeDiff=" + longToTime(null, timeDiff));
             }
             timeToStart = newStatus == TaskStatus.IN_PROGRESS ? System.currentTimeMillis() : 0;
         }
@@ -46,15 +51,15 @@ public class TaskItem {
         this.status = newStatus;
     }
 
-    public String getCurrentTime() {
+    public String getCurrentTime(Context context) {
         if (timeToStart == 0) {
-            return longToTime(timeTotal);
+            return longToTime(context, timeTotal);
         }
         final long time = System.currentTimeMillis() - timeToStart;
-        return longToTime(time);
+        return longToTime(context, time);
     }
 
-    private String longToTime(long time) {
+    private String longToTime(@Nullable Context context, long time) {
         long ms = time % 1000;
         time /= 1000;
         long sec = time % 60;
@@ -67,7 +72,8 @@ public class TaskItem {
 
         StringBuilder sb = new StringBuilder();
         if (days != 0) {
-            sb.append(days).append('!');
+            final String daysText = context == null ? "dd" : context.getString(R.string.days);
+            sb.append(days).append(' ').append(daysText).append('\n');
         }
         sb.append(hours).append(':').append(min).append(':').append(sec);
         return sb.toString();

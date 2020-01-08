@@ -1,5 +1,6 @@
 package com.effective.canbanan.viewmodel;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,11 +57,11 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void bind(TaskItem taskItem) {
+    public void bind(Context context, TaskItem taskItem) {
         this.taskItem = taskItem;
 
         textTitle.setText(taskItem.name);
-        textTime.setText(taskItem.getCurrentTime());
+        textTime.setText(taskItem.getCurrentTime(context));
         parentView.setBackgroundColor(parentView.getContext().getColor(taskItem.status.getColorId()));
     }
 
