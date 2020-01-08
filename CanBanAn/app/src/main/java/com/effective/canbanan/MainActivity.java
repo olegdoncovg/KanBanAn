@@ -1,8 +1,10 @@
 package com.effective.canbanan;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +14,12 @@ import com.effective.canbanan.datamodel.TasksDataModel;
 import com.effective.canbanan.viewmodel.Dropper;
 import com.effective.canbanan.viewmodel.TaskListAdapter;
 
+import static com.effective.canbanan.AddNewTaskActivity.EXTRA_TASK_NAME;
+import static com.effective.canbanan.AddNewTaskActivity.EXTRA_TASK_STATUS;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final int CODE_REQUEST_NEW_TASK = 111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateData() {
         //Clear
-        Dropper.instance.init(findViewById(R.id.parentView), this::updateUI);
+        Dropper.instance.init(findViewById(R.id.parentView), this::updateUI, this::createNewTask);
         TasksDataModel.instance.enumerate();
         tickTimer.clear();
 
@@ -35,6 +42,22 @@ public class MainActivity extends AppCompatActivity {
 
         //Timer
         tickTimer.start(this);
+    }
+
+    private void createNewTask(TaskStatus status) {
+        Intent intent = new Intent(MainActivity.this, AddNewTaskActivity.class);
+        intent.putExtra(EXTRA_TASK_STATUS, status.name());
+        startActivityForResult(intent, CODE_REQUEST_NEW_TASK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && resultCode == Activity.RESULT_OK && requestCode == CODE_REQUEST_NEW_TASK) {
+            TasksDataModel.instance.addNewTask(data.getStringExtra(EXTRA_TASK_NAME),
+                    TaskStatus.valueOf(data.getStringExtra(EXTRA_TASK_STATUS)));
+            updateUI();
+        }
     }
 
     private void updateUI() {

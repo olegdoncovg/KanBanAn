@@ -17,6 +17,8 @@ import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
 import com.effective.canbanan.util.DialogUtil;
 
+import java.util.function.Consumer;
+
 public class Dropper {
     private static final String TAG = Dropper.class.getSimpleName();
     public static Dropper instance = new Dropper();
@@ -24,6 +26,7 @@ public class Dropper {
     //    private DropperLayout dropItemSurface;
 //    private TaskViewHolder hoverTaskHolder;
     private Runnable updateUI;
+    private Consumer<TaskStatus> createNewTask;
     private TaskItem catchedTaskItem;
 
     //    private PointF startPoint = new PointF();
@@ -37,9 +40,10 @@ public class Dropper {
 //        return false;
 //    };
 
-    public void init(ViewGroup parentView, Runnable updateUI) {
+    public void init(ViewGroup parentView, Runnable updateUI, Consumer<TaskStatus> createNewTask) {
         clear();
         this.updateUI = updateUI;
+        this.createNewTask = createNewTask;
 //        this.dropItemSurface = parentView.findViewById(R.id.dropperView);
 //        this.dropItemSurface.setOnTouchListener(onTouchListener);
 
@@ -81,7 +85,9 @@ public class Dropper {
         popupMenu.inflate(R.menu.header_menu);
         popupMenu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.addNewTask) {
-                //TODO do some
+                if (createNewTask != null) {
+                    createNewTask.accept(status);
+                }
                 return true;
             }
             if (item.getItemId() == R.id.removeAll) {

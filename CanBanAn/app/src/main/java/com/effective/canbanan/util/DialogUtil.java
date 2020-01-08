@@ -1,6 +1,8 @@
 package com.effective.canbanan.util;
 
 import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
@@ -29,5 +31,9 @@ public class DialogUtil {
                         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public static void showMessage(Context context, @StringRes int messId) {
+        Toast.makeText(context, messId, Toast.LENGTH_SHORT).show();
     }
 }

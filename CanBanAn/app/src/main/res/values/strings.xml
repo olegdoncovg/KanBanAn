@@ -8,4 +8,6 @@
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
     <string name="days">days</string>
+    <string name="enter_task_name">Enter task name</string>
+    <string name="empty_string">Empty field</string>
 </resources>
