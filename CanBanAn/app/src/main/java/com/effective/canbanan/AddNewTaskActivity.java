@@ -23,7 +23,7 @@ public class AddNewTaskActivity extends AppCompatActivity {
 
         EditText taskName = findViewById(R.id.enter_task_name);
 
-        findViewById(R.id.ok).setOnClickListener((view) -> {
+        findViewById(R.id.createTask).setOnClickListener((view) -> {
             String text = taskName.getText().toString();
             if (TextUtils.isEmpty(text)) {
                 DialogUtil.showMessage(AddNewTaskActivity.this, R.string.empty_string);
