@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.removeItem) {
                 DialogUtil.showYesNoDialog(activity, R.string.remove_all_item, () -> {
-                    TasksDataModel.instance.removeTask(taskItem);
+                    TasksDataModel.instance.removeTask(this, taskItem);
                     updateUI();
                 }, null);
                 return true;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && resultCode == Activity.RESULT_OK && requestCode == CODE_REQUEST_NEW_TASK) {
-            TasksDataModel.instance.addNewTask(data.getStringExtra(EXTRA_TASK_NAME),
+            TasksDataModel.instance.addNewTask(this, data.getStringExtra(EXTRA_TASK_NAME),
                     TaskStatus.valueOf(data.getStringExtra(EXTRA_TASK_STATUS)));
             updateUI();
         }

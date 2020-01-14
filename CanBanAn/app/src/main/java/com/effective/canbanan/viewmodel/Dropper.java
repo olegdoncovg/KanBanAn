@@ -61,12 +61,13 @@ public class Dropper {
     }
 
     private void onClickTaskCategory(View v, TaskStatus status) {
-        if (v == null) {
-            Log.e(TAG, "onClickTaskCategory: v=null");
+        final Context context = v == null ? null : v.getContext();
+        if (context == null) {
+            Log.e(TAG, "onClickTaskCategory: v=" + v + ", context=" + context);
             return;
         }
         if (state == DropState.HOVERING) {
-            changeTaskCategory(status);
+            changeTaskCategory(context, status);
         } else {
             showPopupMenu(v, status);
         }
@@ -92,7 +93,7 @@ public class Dropper {
             }
             if (item.getItemId() == R.id.removeAll) {
                 DialogUtil.showYesNoDialog(activity, R.string.remove_all_item, () -> {
-                    TasksDataModel.instance.removeTasks(status);
+                    TasksDataModel.instance.removeTasks(activity, status);
                     updateUI.run();
                 }, null);
                 return true;
@@ -102,10 +103,10 @@ public class Dropper {
         popupMenu.show();
     }
 
-    private void changeTaskCategory(TaskStatus status) {
+    private void changeTaskCategory(@NonNull Context context, TaskStatus status) {
         state = DropState.PUT_IN_NEW_AREA;
 
-        if (TasksDataModel.instance.changeTaskCategory(catchedTaskItem, status)) {
+        if (TasksDataModel.instance.changeTaskCategory(context, catchedTaskItem, status)) {
             if (updateUI != null) {
                 updateUI.run();
             } else {

@@ -1,6 +1,10 @@
 package com.effective.canbanan.datamodel;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+
+import com.effective.canbanan.backend.DataProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,31 +15,17 @@ public class TasksDataModel {
     private static final String TAG = TasksDataModel.class.getSimpleName();
     public static final int NO_TASK_ID = 0;//Can be never applied for task. Used only as marker
 
+    private DataProvider.IProvider dataProvider = DataProvider.getProvider();
     private final Map<Integer, TaskItem> mTasks = new HashMap<>();
 
     public static final TasksDataModel instance = new TasksDataModel();
-    private static final long debugTime1 = 1575561866521L;
 
     public void enumerate() {
-
-        //TODO - Add dome values for debug - remove after then
-        add(100, "Go ot work", 3000, 0, TaskStatus.DONE);
-        add(101, "Go ot home", 2000, 0, TaskStatus.TO_DO);
-        add(102, "Lunch", 0, 0, TaskStatus.TO_DO);
-        add(103, "Do KanBanAn", 0, debugTime1, TaskStatus.IN_PROGRESS);
-        add(104, "Do KanBanAn 2", 0, debugTime1, TaskStatus.IN_PROGRESS);
-    }
-
-    private TaskItem add(int id, String name, long timeTotal, long timeToStart, TaskStatus status) {
-        return mTasks.put(id, new TaskItem(id, name, timeTotal, timeToStart, status));
-    }
-
-    private TaskItem add(TaskItem task, TaskStatus newStatus) {
-        return mTasks.put(task.id, new TaskItem(task, newStatus));
-    }
-
-    private int generateId() {
-        return (int) System.currentTimeMillis();
+        mTasks.clear();
+        List<TaskItem> tasks = dataProvider.getItems();
+        for (TaskItem task : tasks) {
+            mTasks.put(task.id, task);
+        }
     }
 
     @NonNull
@@ -49,22 +39,35 @@ public class TasksDataModel {
         return tasks;
     }
 
-    public boolean changeTaskCategory(TaskItem taskItem, TaskStatus status) {
-        return add(taskItem, status) != null;
+    public boolean changeTaskCategory(@NonNull Context context, TaskItem task, TaskStatus newStatus) {
+        TaskItem removed = mTasks.put(task.id, new TaskItem(task, newStatus));
+        dataProvider.updateServerInfo(context, mTasks.values());
+        return removed != null;
     }
 
-    public void removeTasks(TaskStatus status) {
+    public void removeTasks(@NonNull Context context, TaskStatus status) {
         List<TaskItem> toRemove = getTasks(status);
         for (TaskItem item : toRemove) {
             mTasks.remove(item.id);
         }
+        dataProvider.updateServerInfo(context, mTasks.values());
     }
 
-    public void addNewTask(String taskName, TaskStatus status) {
-        add(generateId(), taskName, 0, 0, status);
+    private int generateId() {
+        return (int) System.currentTimeMillis();
     }
 
-    public void removeTask(TaskItem item) {
+    public void addNewTask(@NonNull Context context, String taskName, TaskStatus status) {
+        final int id = generateId();
+        if (mTasks.containsKey(id)) {
+            throw new IllegalArgumentException("Duplicate task ID");
+        }
+        mTasks.put(id, new TaskItem(id, taskName, 0, 0, status));
+        dataProvider.updateServerInfo(context, mTasks.values());
+    }
+
+    public void removeTask(@NonNull Context context, TaskItem item) {
         mTasks.remove(item.id);
+        dataProvider.updateServerInfo(context, mTasks.values());
     }
 }
