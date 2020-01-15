@@ -47,17 +47,11 @@ public class Dropper {
 //        this.dropItemSurface = parentView.findViewById(R.id.dropperView);
 //        this.dropItemSurface.setOnTouchListener(onTouchListener);
 
-        parentView.findViewById(R.id.header_to_do_list).setOnClickListener(v -> {
-            onClickTaskCategory(v, TaskStatus.TO_DO);
-        });
-
-        parentView.findViewById(R.id.header_in_progress).setOnClickListener(v -> {
-            onClickTaskCategory(v, TaskStatus.IN_PROGRESS);
-        });
-
-        parentView.findViewById(R.id.header_well_done).setOnClickListener(v -> {
-            onClickTaskCategory(v, TaskStatus.DONE);
-        });
+        for (TaskStatus status : TaskStatus.values()) {
+            parentView.findViewById(status.getViewId()).setOnClickListener(v -> {
+                onClickTaskCategory(v, status);
+            });
+        }
     }
 
     private void onClickTaskCategory(View v, TaskStatus status) {

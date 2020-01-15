@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.effective.canbanan.backend.DataProvider;
+import com.effective.canbanan.backend.ProviderType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,10 +16,15 @@ public class TasksDataModel {
     private static final String TAG = TasksDataModel.class.getSimpleName();
     public static final int NO_TASK_ID = 0;//Can be never applied for task. Used only as marker
 
-    private DataProvider.IProvider dataProvider = DataProvider.getProvider();
+    private DataProvider.IProvider dataProvider = DataProvider.getProvider(ProviderType.DEBUG);
     private final Map<Integer, TaskItem> mTasks = new HashMap<>();
 
     public static final TasksDataModel instance = new TasksDataModel();
+
+    //For test ONLY
+    public static void init(ProviderType providerType) {
+        instance.dataProvider = DataProvider.getProvider(providerType);
+    }
 
     public void enumerate() {
         mTasks.clear();

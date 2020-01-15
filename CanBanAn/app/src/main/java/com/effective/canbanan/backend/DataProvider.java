@@ -18,8 +18,12 @@ public class DataProvider {
         void updateServerInfo(@NonNull Context context, Collection<TaskItem> values);
     }
 
-    public static IProvider getProvider() {
-        return new ProviderDebug();
+    public static IProvider getProvider(ProviderType providerType) {
+        if (providerType == ProviderType.DEBUG) {
+            return new ProviderDebug();
+        }
+        //TODO replace with default provider
+        return null;
     }
 
 }
