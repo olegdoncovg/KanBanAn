@@ -13,9 +13,10 @@ public class DataProvider {
     private static final String TAG = DataProvider.class.getSimpleName();
 
     public interface IProvider {
-        List<TaskItem> getItems();
+        @NonNull
+        List<TaskItem> getItems(@NonNull Context context);
 
-        void updateServerInfo(@NonNull Context context, Collection<TaskItem> values);
+        void updateServerInfo(@NonNull Context context, Collection<TaskItem> values, boolean instantAction);
     }
 
     public static IProvider getProvider(ProviderType providerType) {

@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateData() {
         //Clear
         Dropper.instance.init(findViewById(R.id.parentView), this::updateUI, this::createNewTask);
-        TasksDataModel.instance.enumerate();
+        TasksDataModel.instance.enumerate(this);
         tickTimer.clear();
 
         //Update UI

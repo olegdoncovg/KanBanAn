@@ -17,8 +17,9 @@ public class ProviderDebug implements DataProvider.IProvider {
 
     private static final long debugTime1 = 1575561866521L;
 
+    @NonNull
     @Override
-    public List<TaskItem> getItems() {
+    public List<TaskItem> getItems(@NonNull Context context) {
         List<TaskItem> items = new ArrayList<>();
         add(items, 100, "Go ot work", 3000, 0, TaskStatus.DONE);
         add(items, 101, "Go ot home", 2000, 0, TaskStatus.TO_DO);
@@ -38,7 +39,7 @@ public class ProviderDebug implements DataProvider.IProvider {
     }
 
     @Override
-    public void updateServerInfo(@NonNull Context context, Collection<TaskItem> values) {
+    public void updateServerInfo(@NonNull Context context, Collection<TaskItem> values, boolean instantAction) {
         Toast.makeText(context, "ProviderDebug don't have server part!", Toast.LENGTH_LONG).show();
     }
 }

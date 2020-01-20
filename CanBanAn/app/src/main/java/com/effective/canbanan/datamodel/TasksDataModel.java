@@ -26,9 +26,9 @@ public class TasksDataModel {
         instance.dataProvider = DataProvider.getProvider(providerType);
     }
 
-    public void enumerate() {
+    public void enumerate(@NonNull Context context) {
         mTasks.clear();
-        List<TaskItem> tasks = dataProvider.getItems();
+        List<TaskItem> tasks = dataProvider.getItems(context);
         for (TaskItem task : tasks) {
             mTasks.put(task.id, task);
         }
@@ -47,7 +47,7 @@ public class TasksDataModel {
 
     public boolean changeTaskCategory(@NonNull Context context, TaskItem task, TaskStatus newStatus) {
         TaskItem removed = mTasks.put(task.id, new TaskItem(task, newStatus));
-        dataProvider.updateServerInfo(context, mTasks.values());
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
         return removed != null;
     }
 
@@ -56,7 +56,7 @@ public class TasksDataModel {
         for (TaskItem item : toRemove) {
             mTasks.remove(item.id);
         }
-        dataProvider.updateServerInfo(context, mTasks.values());
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
     }
 
     private int generateId() {
@@ -69,11 +69,11 @@ public class TasksDataModel {
             throw new IllegalArgumentException("Duplicate task ID");
         }
         mTasks.put(id, new TaskItem(id, taskName, 0, 0, status));
-        dataProvider.updateServerInfo(context, mTasks.values());
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
     }
 
     public void removeTask(@NonNull Context context, TaskItem item) {
         mTasks.remove(item.id);
-        dataProvider.updateServerInfo(context, mTasks.values());
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
     }
 }
