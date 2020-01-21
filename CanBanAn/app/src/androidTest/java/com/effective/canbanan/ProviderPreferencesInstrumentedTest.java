@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 @LargeTest
 public class ProviderPreferencesInstrumentedTest {
     private static final String TAG = ProviderPreferencesInstrumentedTest.class.getSimpleName();
+    private static final String FILE_NAME_SUFFIX_FOR_TEST = "_just_forTest_" + TAG;
 
     @Rule
     public ActivityTestRule<MainActivity> activityMainRule =
@@ -47,7 +48,7 @@ public class ProviderPreferencesInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        ProviderPreferences providerPreferences = new ProviderPreferences();
+        ProviderPreferences providerPreferences = new ProviderPreferences(FILE_NAME_SUFFIX_FOR_TEST);
         ProviderDebug providerDebug = new ProviderDebug();
 
         List<TaskItem> taskItems1 = providerDebug.getItems(appContext);

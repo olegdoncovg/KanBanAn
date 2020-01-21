@@ -21,11 +21,21 @@ public class ProviderPreferences implements DataProvider.IProvider {
     private static final String SHARED_PREF_COUNT = "COUNT";
     private static final String SHARED_PREF_TASK_PS = "TASK_";
 
+    private final String fileNapeSuffix;
+
+    public ProviderPreferences() {
+        this.fileNapeSuffix = "";
+    }
+
+    public ProviderPreferences(String fileNapeSuffix) {
+        this.fileNapeSuffix = fileNapeSuffix;
+    }
+
     @NonNull
     @Override
     public List<TaskItem> getItems(@NonNull Context context) {
         final SharedPreferences pref = context.getApplicationContext().getSharedPreferences(
-                SHARED_PREF_PATH, Context.MODE_PRIVATE);
+                getSharedPrefPath(), Context.MODE_PRIVATE);
         final List<TaskItem> items = new ArrayList<>();
         final int count = pref.getInt(SHARED_PREF_COUNT, 0);
         for (int i = 0; i < count; i++) {
@@ -49,7 +59,7 @@ public class ProviderPreferences implements DataProvider.IProvider {
                                  boolean instantAction) {
         final List<TaskItem> values = new ArrayList<>(items);
         final SharedPreferences pref = context.getApplicationContext().getSharedPreferences(
-                SHARED_PREF_PATH, Context.MODE_PRIVATE);
+                getSharedPrefPath(), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = pref.edit();
 
         editor.putInt(SHARED_PREF_COUNT, values.size());
@@ -63,5 +73,9 @@ public class ProviderPreferences implements DataProvider.IProvider {
         } else {
             editor.apply();
         }
+    }
+
+    private String getSharedPrefPath() {
+        return SHARED_PREF_PATH + fileNapeSuffix;
     }
 }

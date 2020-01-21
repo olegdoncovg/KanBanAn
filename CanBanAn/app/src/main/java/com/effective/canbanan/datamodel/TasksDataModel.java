@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.effective.canbanan.BuildConfig;
 import com.effective.canbanan.backend.DataProvider;
 import com.effective.canbanan.backend.ProviderType;
 
@@ -16,13 +17,16 @@ public class TasksDataModel {
     private static final String TAG = TasksDataModel.class.getSimpleName();
     public static final int NO_TASK_ID = 0;//Can be never applied for task. Used only as marker
 
-    private DataProvider.IProvider dataProvider = DataProvider.getProvider(ProviderType.DEBUG);
+    private DataProvider.IProvider dataProvider = DataProvider.getProvider(ProviderType.SHARED_PREFERENCES);
     private final Map<Integer, TaskItem> mTasks = new HashMap<>();
 
     public static final TasksDataModel instance = new TasksDataModel();
 
     //For test ONLY
     public static void init(ProviderType providerType) {
+        if (!BuildConfig.DEBUG) {
+            throw new IllegalStateException("Tray apply providerType=" + providerType + " in DEBUG mode");
+        }
         instance.dataProvider = DataProvider.getProvider(providerType);
     }
 

@@ -20,8 +20,11 @@ public class DataProvider {
     }
 
     public static IProvider getProvider(ProviderType providerType) {
-        if (providerType == ProviderType.DEBUG) {
-            return new ProviderDebug();
+        switch (providerType) {
+            case DEBUG:
+                return new ProviderDebug();
+            case SHARED_PREFERENCES:
+                return new ProviderPreferences();
         }
         //TODO replace with default provider
         return null;
