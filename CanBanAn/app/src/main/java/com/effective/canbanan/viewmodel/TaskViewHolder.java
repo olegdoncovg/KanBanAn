@@ -1,7 +1,6 @@
 package com.effective.canbanan.viewmodel;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.effective.canbanan.R;
 import com.effective.canbanan.datamodel.TaskItem;
-
-import java.util.function.BiConsumer;
 
 class TaskViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = TaskViewHolder.class.getSimpleName();
@@ -26,13 +23,13 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 //    private boolean isActive;
 
     public static TaskViewHolder newInstance(@NonNull ViewGroup parent, int viewType,
-                                             BiConsumer<View, TaskItem> showItemContextMenu) {
+                                             @NonNull IOnItemActions onItemAction) {
         View rowView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_view_item, parent, false);
-        return new TaskViewHolder(rowView, showItemContextMenu);
+        return new TaskViewHolder(rowView, onItemAction);
     }
 
-    public TaskViewHolder(@NonNull final View rowView, BiConsumer<View, TaskItem> showItemContextMenu) {
+    public TaskViewHolder(@NonNull final View rowView, @NonNull final IOnItemActions onItemAction) {
         super(rowView);
         textTitle = rowView.findViewById(R.id.title);
         textTime = rowView.findViewById(R.id.time);
@@ -45,11 +42,7 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 //                rowView.setBackgroundColor(isActive ?
 //                        rowView.getContext().getColor(R.color.bg_item_active) :
 //                        rowView.getContext().getColor(R.color.bg_item_passive));
-                if (showItemContextMenu != null) {
-                    showItemContextMenu.accept(rowView, taskItem);
-                } else {
-                    Log.e(TAG, "TaskViewHolder: showItemContextMenu=null");
-                }
+                onItemAction.onContextMenuShown(rowView, taskItem);
             }
         });
 //        rowView.setOnTouchListener(new View.OnTouchListener() {
@@ -87,8 +80,8 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 //        ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mainView.getLayoutParams();
 //        p.setMargins((int) (position.x), (int) (position.y), p.rightMargin, p.bottomMargin);
 //    }
-//
-//    public TaskItem getTask() {
-//        return taskItem;
-//    }
+
+    public TaskItem getTask() {
+        return taskItem;
+    }
 }

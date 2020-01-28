@@ -1,6 +1,5 @@
 package com.effective.canbanan.viewmodel;
 
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,18 +11,18 @@ import com.effective.canbanan.datamodel.TasksDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     private static final String TAG = TaskListAdapter.class.getSimpleName();
     private final List<TaskItem> values = new ArrayList<>();
     private final TaskStatus taskStatus;
-    private final BiConsumer<View, TaskItem> showItemContextMenu;
+    @NonNull
+    private final IOnItemActions onItemAction;
 
-    public TaskListAdapter(TaskStatus taskStatus, BiConsumer<View, TaskItem> showItemContextMenu) {
+    public TaskListAdapter(TaskStatus taskStatus, @NonNull IOnItemActions onItemAction) {
         this.taskStatus = taskStatus;
-        this.showItemContextMenu = showItemContextMenu;
+        this.onItemAction = onItemAction;
     }
 
     public void updateData() {
@@ -35,7 +34,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return TaskViewHolder.newInstance(parent, viewType, showItemContextMenu);
+        return TaskViewHolder.newInstance(parent, viewType, onItemAction);
     }
 
     @Override
