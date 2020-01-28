@@ -108,6 +108,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, AddNewTaskActivity.class);
         intent.putExtra(EXTRA_TASK_STATUS, status.name());
         startActivityForResult(intent, CODE_REQUEST_NEW_TASK);
+
+//        EnterTextAlertDialog enterTextAlertDialog = new EnterTextAlertDialog(this, text -> {
+//            if (!TextUtils.isEmpty(text)) {
+//                TasksDataModel.instance.addNewTask(MainActivity.this, text, status);
+//                updateUI();
+//            } else {
+//                DialogUtil.showMessage(MainActivity.this, R.string.empty_string);
+//            }
+//        });
+//        enterTextAlertDialog.show();
     }
 
     @Override
