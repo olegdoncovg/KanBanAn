@@ -29,8 +29,8 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class ProviderPreferencesInstrumentedTest {
-    private static final String TAG = ProviderPreferencesInstrumentedTest.class.getSimpleName();
+public class ProviderPreferencesTest {
+    private static final String TAG = ProviderPreferencesTest.class.getSimpleName();
     private static final String FILE_NAME_SUFFIX_FOR_TEST = "_just_forTest_" + TAG;
 
     @Rule

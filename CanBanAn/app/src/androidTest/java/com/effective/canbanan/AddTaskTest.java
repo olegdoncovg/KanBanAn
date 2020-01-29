@@ -33,8 +33,8 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class AddTaskInstrumentedTest {
-    private static final String TAG = AddTaskInstrumentedTest.class.getSimpleName();
+public class AddTaskTest {
+    private static final String TAG = AddTaskTest.class.getSimpleName();
 
     private static final boolean WATCH_MODE = false;
     private static int debugCounter = 0;
