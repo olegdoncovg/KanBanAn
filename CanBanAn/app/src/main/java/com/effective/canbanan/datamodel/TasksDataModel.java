@@ -22,7 +22,9 @@ public class TasksDataModel {
 
     public static final TasksDataModel instance = new TasksDataModel();
 
-    //For test ONLY
+    //For test ONLY/////////////////
+    private static Integer lastCreatedTaskId_DEBUG;
+
     public static void init(ProviderType providerType) {
         if (!BuildConfig.DEBUG) {
             throw new IllegalStateException("Tray apply providerType=" + providerType + " in DEBUG mode");
@@ -30,12 +32,24 @@ public class TasksDataModel {
         instance.dataProvider = DataProvider.getProvider(providerType);
     }
 
+    public static TaskItem getLastCreatedTaskItem() {
+        if (!BuildConfig.DEBUG) {
+            throw new IllegalStateException("Tray getLastCreatedTaskItem in DEBUG mode");
+        }
+        return instance.getTask(lastCreatedTaskId_DEBUG);
+    }
+    //////////////////////////////////
+
     public void enumerate(@NonNull Context context) {
         mTasks.clear();
         List<TaskItem> tasks = dataProvider.getItems(context);
         for (TaskItem task : tasks) {
             mTasks.put(task.id, task);
         }
+    }
+
+    private TaskItem getTask(int taskId) {
+        return mTasks.get(taskId);
     }
 
     @NonNull
@@ -72,7 +86,8 @@ public class TasksDataModel {
         if (mTasks.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate task ID");
         }
-        mTasks.put(id, new TaskItem(id, taskName, 0, 0, status));
+        lastCreatedTaskId_DEBUG = id;
+        mTasks.put(id, new TaskItem(id, taskName, status));
         dataProvider.updateServerInfo(context, mTasks.values(), false);
     }
 

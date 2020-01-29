@@ -51,6 +51,10 @@ public class TaskItem {
         return (int) (id + name.hashCode() + timeTotal + timeStartActive + status.hashCode());
     }
 
+    public TaskItem(int id, String taskName, TaskStatus status) {
+        this(id, taskName, 0, status == TaskStatus.IN_PROGRESS ? System.currentTimeMillis() : 0, status);
+    }
+
     public TaskItem(int id, String name, long timeTotal, long timeToStart, TaskStatus status) {
         this.id = id;
         this.name = name;
@@ -78,6 +82,13 @@ public class TaskItem {
         this.timeTotal = timeTotal;
         this.timeStartActive = timeToStart;
         this.status = newStatus;
+    }
+
+    public long getCurrentTimeInLong() {
+        if (timeStartActive == 0) {
+            return timeTotal;
+        }
+        return timeTotal + System.currentTimeMillis() - timeStartActive;
     }
 
     public String getCurrentTime(Context context) {

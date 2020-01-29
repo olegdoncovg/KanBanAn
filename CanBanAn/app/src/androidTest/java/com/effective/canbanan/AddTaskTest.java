@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.effective.canbanan.backend.ProviderType;
+import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
 
@@ -25,6 +26,7 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -90,10 +92,46 @@ public class AddTaskTest {
         Log.i(TAG, "addNewTask");
         SystemClock.sleep(100);
         addNewTask(TaskStatus.TO_DO);
+        checkIfTimerStartedString(TaskStatus.TO_DO);
         SystemClock.sleep(100);
         addNewTask(TaskStatus.IN_PROGRESS);
+        checkIfTimerStartedString(TaskStatus.IN_PROGRESS);
         SystemClock.sleep(100);
         addNewTask(TaskStatus.DONE);
+        checkIfTimerStartedString(TaskStatus.DONE);
+    }
+
+    //test for timer started (Only after add new task)
+    //Long period: 1100 ms
+    private void checkIfTimerStartedLong() {
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        TaskItem taskItem = TasksDataModel.getLastCreatedTaskItem();
+        TaskStatus status = taskItem.status;
+        String timeS1 = taskItem.getCurrentTime(appContext);
+        SystemClock.sleep(1100);
+        String timeS2 = taskItem.getCurrentTime(appContext);
+
+        if (status == TaskStatus.IN_PROGRESS) {
+            assertNotEquals("Timer for task not started!!! " + timeS1 + " != " + timeS1, timeS1, timeS2);
+        } else {
+            assertEquals("Timer for task WRONGLY stated!!! " + timeS1 + " == " + timeS1, timeS1, timeS2);
+        }
+    }
+
+    //test for timer started (Only after add new task)
+    private void checkIfTimerStartedString(TaskStatus status) {
+        TaskItem taskItem = TasksDataModel.getLastCreatedTaskItem();
+        long time1 = taskItem.getCurrentTimeInLong();
+        SystemClock.sleep(100);
+        long time2 = taskItem.getCurrentTimeInLong();
+
+        assertEquals("Task status " + status + "!=" + taskItem.status, status, taskItem.status);
+
+        if (status == TaskStatus.IN_PROGRESS) {
+            assertNotEquals("Timer for task not started!!! " + time1 + " != " + time2, time1, time2);
+        } else {
+            assertEquals("Timer for task WRONGLY stated!!! " + time1 + " == " + time2, time1, time2);
+        }
     }
 
     public void addNewTask(TaskStatus status) {
@@ -107,6 +145,8 @@ public class AddTaskTest {
         SystemClock.sleep(100);
         onView(withId(R.id.enter_task_name)).perform(pressImeActionButton());
         onView(withId(R.id.createTask)).perform(click());
+
+        checkIfTimerStartedLong();
 
         SystemClock.sleep(100);
         assertEquals(TasksDataModel.instance.getTasks(status).size(), tasksAmount + 1);
