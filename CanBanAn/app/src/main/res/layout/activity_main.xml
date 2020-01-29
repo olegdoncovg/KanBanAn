@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
+                android:padding="@dimen/list_item_interval"
                 android:text="@string/to_do_list" />
 
             <include layout="@layout/divider_vertical" />
@@ -34,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
+                android:padding="@dimen/list_item_interval"
                 android:text="@string/in_progress" />
 
             <include layout="@layout/divider_vertical" />
@@ -45,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
+                android:padding="@dimen/list_item_interval"
                 android:text="@string/well_done" />
 
         </LinearLayout>
