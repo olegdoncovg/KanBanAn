@@ -12,11 +12,22 @@ import java.util.List;
 public class DataProvider {
     private static final String TAG = DataProvider.class.getSimpleName();
 
+    //Todo - split interface IProvider and IStatistic
     public interface IProvider {
         @NonNull
         List<TaskItem> getItems(@NonNull Context context);
 
         void updateServerInfo(@NonNull Context context, Collection<TaskItem> values, boolean instantAction);
+
+        List<StatisticItem> getStatisticInfo(@NonNull Context context);
+
+        void postStatisticInfo(@NonNull Context context, @NonNull StatisticType statisticType,
+                               TaskItem taskItem, boolean instantAction);
+
+        /**
+         * Prevent call this method not in DEBUG
+         */
+        void clearStatistic(@NonNull Context context);
     }
 
     public static IProvider getProvider(ProviderType providerType) {

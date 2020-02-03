@@ -5,17 +5,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.effective.canbanan.BuildConfig;
 import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ProviderDebug implements DataProvider.IProvider {
     private static final String TAG = ProviderDebug.class.getSimpleName();
 
     private static final long debugTime1 = 1575561866521L;
+
+    //Not saved list. It will be remove after clear static
+    private static List<StatisticItem> statisticItems = new ArrayList<>();
 
     @NonNull
     @Override
@@ -41,5 +46,24 @@ public class ProviderDebug implements DataProvider.IProvider {
     @Override
     public void updateServerInfo(@NonNull Context context, Collection<TaskItem> values, boolean instantAction) {
         Toast.makeText(context, "ProviderDebug don't have server part!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public List<StatisticItem> getStatisticInfo(@NonNull Context context) {
+        return Collections.unmodifiableList(statisticItems);
+    }
+
+    @Override
+    public void postStatisticInfo(@NonNull Context context, @NonNull StatisticType statisticType,
+                                  TaskItem taskItem, boolean instantAction) {
+        statisticItems.add(new StatisticItem(statisticType, taskItem));
+    }
+
+    @Override
+    public void clearStatistic(@NonNull Context context) {
+        if (!BuildConfig.DEBUG) {
+            throw new IllegalStateException("Tray clearStatistic not in DEBUG mode");
+        }
+        statisticItems.clear();
     }
 }

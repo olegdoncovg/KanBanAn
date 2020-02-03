@@ -1,17 +1,22 @@
 package com.effective.canbanan.datamodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.effective.canbanan.BuildConfig;
 import com.effective.canbanan.backend.DataProvider;
 import com.effective.canbanan.backend.ProviderType;
+import com.effective.canbanan.backend.StatisticItem;
+import com.effective.canbanan.backend.StatisticType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class TasksDataModel {
     private static final String TAG = TasksDataModel.class.getSimpleName();
@@ -25,11 +30,15 @@ public class TasksDataModel {
     //For test ONLY/////////////////
     private static Integer lastCreatedTaskId_DEBUG;
 
-    public static void init(ProviderType providerType) {
+    public static void init(Context context, ProviderType providerType, boolean clearStatistic) {
         if (!BuildConfig.DEBUG) {
             throw new IllegalStateException("Tray apply providerType=" + providerType + " in DEBUG mode");
         }
         instance.dataProvider = DataProvider.getProvider(providerType);
+        if (clearStatistic && instance.dataProvider != null) {
+            Log.w(TAG, "init: clearStatistic");
+            instance.dataProvider.clearStatistic(context);
+        }
     }
 
     public static TaskItem getLastCreatedTaskItem() {
@@ -87,12 +96,36 @@ public class TasksDataModel {
             throw new IllegalArgumentException("Duplicate task ID");
         }
         lastCreatedTaskId_DEBUG = id;
-        mTasks.put(id, new TaskItem(id, taskName, status));
+
+        final TaskItem newTask = new TaskItem(id, taskName, status);
+        mTasks.put(id, newTask);
+        dataProvider.postStatisticInfo(context, StatisticType.CREATE_NEW_TASK, newTask, false);
+
         dataProvider.updateServerInfo(context, mTasks.values(), false);
     }
 
     public void removeTask(@NonNull Context context, TaskItem item) {
         mTasks.remove(item.id);
         dataProvider.updateServerInfo(context, mTasks.values(), false);
+    }
+
+    @NonNull
+    public List<String> getPopularNames(@NonNull Context context) {
+        final List<StatisticItem> items = dataProvider.getStatisticInfo(context);
+
+        Map<String, Integer> popularity = new TreeMap<>();
+        for (StatisticItem item : items) {
+            String name = item.taskItem.name;
+            int amountToWrite = 1;
+            Integer amount = popularity.get(name);
+            if (amount != null) {
+                amountToWrite += amount;
+            }
+            popularity.put(name, amountToWrite);
+        }
+
+        final List<String> sortedList = new ArrayList<>(popularity.keySet());
+        Collections.reverse(sortedList);
+        return sortedList;
     }
 }

@@ -1,21 +1,15 @@
 package com.effective.canbanan;
 
-import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
-import com.effective.canbanan.backend.ProviderType;
 import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,34 +29,8 @@ import static org.junit.Assert.assertNotEquals;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class AddTaskTest {
+public class AddTaskTest extends SuperTest {
     private static final String TAG = AddTaskTest.class.getSimpleName();
-
-    private static final boolean WATCH_MODE = false;
-    private static int debugCounter = 0;
-
-    @Rule
-    public ActivityTestRule<MainActivity> activityMainRule =
-            new ActivityTestRule(MainActivity.class);
-//    @Rule
-//    public ActivityTestRule<AddNewTaskActivity> activityAddTaskRule =
-//            new ActivityTestRule(AddNewTaskActivity.class);
-
-    @Before
-    public void before() {
-        Log.i(TAG, "before");
-        debugCounter = 0;
-        TasksDataModel.init(ProviderType.DEBUG);
-    }
-
-    @Test
-    public void useAppContext() {
-        Log.i(TAG, "useAppContext");
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
-        assertEquals("com.effective.canbanan", appContext.getPackageName());
-    }
 
     @Test
     public void removeAll() {
@@ -75,7 +43,7 @@ public class AddTaskTest {
         removeAll(TaskStatus.DONE);
     }
 
-    public void removeAll(TaskStatus status) {
+    public static void removeAll(TaskStatus status) {
         Log.i(TAG, "removeAll: status=" + status);
         onView(withId(status.getViewId())).perform(click());
         onView(withText(R.string.remove_all_item)).perform(click());
@@ -91,25 +59,24 @@ public class AddTaskTest {
     public void addNewTask() {
         Log.i(TAG, "addNewTask");
         SystemClock.sleep(100);
-        addNewTask(TaskStatus.TO_DO);
+        addNewTask(TaskStatus.TO_DO, "taskNew" + debugCounter++);
         checkIfTimerStartedString(TaskStatus.TO_DO);
         SystemClock.sleep(100);
-        addNewTask(TaskStatus.IN_PROGRESS);
+        addNewTask(TaskStatus.IN_PROGRESS, "taskNew" + debugCounter++);
         checkIfTimerStartedString(TaskStatus.IN_PROGRESS);
         SystemClock.sleep(100);
-        addNewTask(TaskStatus.DONE);
+        addNewTask(TaskStatus.DONE, "taskNew" + debugCounter++);
         checkIfTimerStartedString(TaskStatus.DONE);
     }
 
     //test for timer started (Only after add new task)
     //Long period: 1100 ms
-    private void checkIfTimerStartedLong() {
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    static void checkIfTimerStartedLong() {
         TaskItem taskItem = TasksDataModel.getLastCreatedTaskItem();
         TaskStatus status = taskItem.status;
-        String timeS1 = taskItem.getCurrentTime(appContext);
+        String timeS1 = taskItem.getCurrentTime(getContext());
         SystemClock.sleep(1100);
-        String timeS2 = taskItem.getCurrentTime(appContext);
+        String timeS2 = taskItem.getCurrentTime(getContext());
 
         if (status == TaskStatus.IN_PROGRESS) {
             assertNotEquals("Timer for task not started!!! " + timeS1 + " != " + timeS1, timeS1, timeS2);
@@ -119,7 +86,7 @@ public class AddTaskTest {
     }
 
     //test for timer started (Only after add new task)
-    private void checkIfTimerStartedString(TaskStatus status) {
+    static void checkIfTimerStartedString(TaskStatus status) {
         TaskItem taskItem = TasksDataModel.getLastCreatedTaskItem();
         long time1 = taskItem.getCurrentTimeInLong();
         SystemClock.sleep(100);
@@ -134,14 +101,14 @@ public class AddTaskTest {
         }
     }
 
-    public void addNewTask(TaskStatus status) {
+    static void addNewTask(TaskStatus status, String taskName) {
         Log.i(TAG, "addNewTask: status=" + status);
         SystemClock.sleep(100);
         final int tasksAmount = TasksDataModel.instance.getTasks(status).size();
 
         onView(withId(status.getViewId())).perform(click());
         onView(withText(R.string.add_item)).perform(click());
-        onView(withId(R.id.enter_task_name)).perform(typeText("taskNew" + debugCounter++));
+        onView(withId(R.id.enter_task_name)).perform(typeText(taskName));
         SystemClock.sleep(100);
         onView(withId(R.id.enter_task_name)).perform(pressImeActionButton());
         onView(withId(R.id.createTask)).perform(click());
@@ -163,16 +130,16 @@ public class AddTaskTest {
         createNewTasks(TaskStatus.DONE);
     }
 
-    public void createNewTasks(TaskStatus status) {
+    static void createNewTasks(TaskStatus status) {
         Log.i(TAG, "createNewTasks: status=" + status);
         removeAll(status);
 
         SystemClock.sleep(100);
         assertEquals(TasksDataModel.instance.getTasks(status).size(), 0);
 
-        addNewTask(status);
+        addNewTask(status, "taskNew" + debugCounter++);
 
-        addNewTask(status);
+        addNewTask(status, "taskNew" + debugCounter++);
 
         SystemClock.sleep(100);
         assertEquals(TasksDataModel.instance.getTasks(status).size(), 2);

@@ -7,13 +7,11 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
 import com.effective.canbanan.backend.ProviderDebug;
 import com.effective.canbanan.backend.ProviderPreferences;
 import com.effective.canbanan.datamodel.TaskItem;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,17 +27,17 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class ProviderPreferencesTest {
+public class ProviderPreferencesTest extends SuperTest {
     private static final String TAG = ProviderPreferencesTest.class.getSimpleName();
     private static final String FILE_NAME_SUFFIX_FOR_TEST = "_just_forTest_" + TAG;
 
-    @Rule
-    public ActivityTestRule<MainActivity> activityMainRule =
-            new ActivityTestRule(MainActivity.class);
+    @Test
+    public void readWriteInstant() {
+        readWrite(true);
+    }
 
     @Test
-    public void readWrite() {
-        readWrite(true);
+    public void readWriteNotInstant() {
         readWrite(false);
     }
 
