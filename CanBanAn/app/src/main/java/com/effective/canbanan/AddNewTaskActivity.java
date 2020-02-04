@@ -60,7 +60,7 @@ public class AddNewTaskActivity extends AppCompatActivity {
         List<String> data = TasksDataModel.instance.getStatisticNames(
                 this, sortOption, LIST_ITEMS_MAX_COUNT);
         ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<>(
-                this, android.R.layout.simple_list_item_1, data);
+                this, R.layout.recent_name_item, data);
         listView.setAdapter(arrayAdapter2);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             taskName.setText(data.get(position));

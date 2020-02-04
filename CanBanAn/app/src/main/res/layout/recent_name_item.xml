@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text1"
+    style="@style/ListViewItemTitle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/list_item_interval"
+    android:ellipsize="end"
+    android:gravity="center_vertical"
+    tools:text="taskname of task name of taskname of taskname of task" />
