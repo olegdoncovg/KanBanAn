@@ -110,22 +110,52 @@ public class TasksDataModel {
     }
 
     @NonNull
-    public List<String> getPopularNames(@NonNull Context context) {
-        final List<StatisticItem> items = dataProvider.getStatisticInfo(context);
+    public List<String> getStatisticNames(@NonNull Context context, @NonNull SortOption option,
+                                          int countMax) {
+        final List<StatisticItem> items = new ArrayList<>(dataProvider.getStatisticInfo(context));
 
-        Map<String, Integer> popularity = new TreeMap<>();
-        for (StatisticItem item : items) {
-            String name = item.taskItem.name;
-            int amountToWrite = 1;
-            Integer amount = popularity.get(name);
-            if (amount != null) {
-                amountToWrite += amount;
-            }
-            popularity.put(name, amountToWrite);
+        //Todo - replace by sort methods in SortOption
+        switch (option) {
+            case POPULAR:
+                Map<String, Integer> popularity = new TreeMap<>();
+                for (StatisticItem item : items) {
+                    String name = item.taskItem.name;
+                    int amountToWrite = 1;
+                    Integer amount = popularity.get(name);
+                    if (amount != null) {
+                        amountToWrite += amount;
+                    }
+                    popularity.put(name, amountToWrite);
+                }
+
+                final List<String> sortedList = new ArrayList<>(popularity.keySet());
+                Collections.reverse(sortedList);
+
+                final List<String> retList = new ArrayList<>();
+                for (String name : sortedList) {
+                    retList.add(name);
+                    if (retList.size() >= countMax) {
+                        break;
+                    }
+                }
+
+                return retList;
+            case RECENT:
+                items.sort((o1, o2) -> (int) (o2.timeToCollect - o1.timeToCollect));
+                final List<String> recentList = new ArrayList<>();
+
+                for (StatisticItem item : items) {
+                    String name = item.taskItem.name;
+                    if (!recentList.contains(name)) {
+                        recentList.add(name);
+                    }
+                    if (recentList.size() >= countMax) {
+                        break;
+                    }
+                }
+                return recentList;
+            default:
+                return new ArrayList<>();
         }
-
-        final List<String> sortedList = new ArrayList<>(popularity.keySet());
-        Collections.reverse(sortedList);
-        return sortedList;
     }
 }

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.effective.canbanan.datamodel.SortOption;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
 
@@ -35,29 +37,80 @@ public class StatisticTest extends SuperTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         SystemClock.sleep(100);
+        String taskName0 = "taskNew" + debugCounter++;
         String taskName1 = "taskNew" + debugCounter++;
         String taskName2 = "taskNew" + debugCounter++;
-        String taskName3 = "taskNew" + debugCounter++;
+        AddTaskTest.addNewTask(status, taskName2);
+        AddTaskTest.addNewTask(status, taskName2);
+        AddTaskTest.addNewTask(status, taskName2);
+        AddTaskTest.addNewTask(status, taskName0);
         AddTaskTest.addNewTask(status, taskName1);
-        AddTaskTest.addNewTask(status, taskName2);
-        AddTaskTest.addNewTask(status, taskName2);
-        AddTaskTest.addNewTask(status, taskName3);
-        AddTaskTest.addNewTask(status, taskName3);
-        AddTaskTest.addNewTask(status, taskName3);
-        List<String> namesBeforeRemove = TasksDataModel.instance.getPopularNames(appContext);
+        AddTaskTest.addNewTask(status, taskName1);
+
+        List<String> namesBeforeRecentRemove =
+                TasksDataModel.instance.getStatisticNames(appContext, SortOption.RECENT, 3);
+        List<String> namesBeforePopularRemove =
+                TasksDataModel.instance.getStatisticNames(appContext, SortOption.POPULAR, 3);
 
         AddTaskTest.removeAll(status);
 
-        List<String> names = TasksDataModel.instance.getPopularNames(appContext);
-        Log.i(TAG, "addNewTask: status=" + names);
+        ///////////////POPULAR
+        {
+            List<String> namesCount3 =
+                    TasksDataModel.instance.getStatisticNames(appContext, SortOption.POPULAR, 3);
+            Log.i(TAG, "addNewTask: status=" + namesCount3);
 
-        assertEquals("namesBeforeRemove!=names after remove", namesBeforeRemove, names);
-        assertEquals(3, names.size());
+            assertEquals("namesBeforeRemove!=names after remove", namesBeforePopularRemove, namesCount3);
+            assertEquals(3, namesCount3.size());
 
-        assertEquals("names.size()", names.size(), 3);
+            assertEquals("names.size()", namesCount3.size(), 3);
 
-        assertEquals("Wrong name=" + taskName3, taskName3, names.get(0));
-        assertEquals("Wrong name=" + taskName2, taskName2, names.get(1));
-        assertEquals("Wrong name=" + taskName1, taskName1, names.get(2));
+            assertEqualsName(taskName2, namesCount3, 0);
+            assertEqualsName(taskName1, namesCount3, 1);
+            assertEqualsName(taskName0, namesCount3, 2);
+        }
+
+        {
+            List<String> namesCount1 =
+                    TasksDataModel.instance.getStatisticNames(appContext, SortOption.POPULAR, 1);
+            assertEquals(1, namesCount1.size());
+            assertEqualsName(taskName2, namesCount1, 0);
+        }
+
+        {
+            List<String> namesCount2 =
+                    TasksDataModel.instance.getStatisticNames(appContext, SortOption.POPULAR, 2);
+            assertEquals(2, namesCount2.size());
+            assertEqualsName(taskName2, namesCount2, 0);
+            assertEqualsName(taskName1, namesCount2, 1);
+        }
+
+        ///////////////RECENT
+
+        {
+            List<String> namesCount3 =
+                    TasksDataModel.instance.getStatisticNames(appContext, SortOption.RECENT, 3);
+            Log.i(TAG, "addNewTask: status=" + namesCount3);
+
+            assertEquals("namesBeforeRemove!=names after remove", namesBeforeRecentRemove, namesCount3);
+
+            assertEquals(3, namesCount3.size());
+            assertEqualsName(taskName1, namesCount3, 0);
+            assertEqualsName(taskName0, namesCount3, 1);
+            assertEqualsName(taskName2, namesCount3, 2);
+        }
+
+        {
+            List<String> namesCount2 =
+                    TasksDataModel.instance.getStatisticNames(appContext, SortOption.RECENT, 2);
+            assertEquals(2, namesCount2.size());
+            assertEqualsName(taskName1, namesCount2, 0);
+            assertEqualsName(taskName0, namesCount2, 1);
+        }
+    }
+
+    private void assertEqualsName(String name1, @NonNull List<String> list, int pos) {
+        String name2 = list.get(pos);
+        assertEquals("Wrong name=" + name1 + " !=" + name2 + ", pos=" + pos, name1, name2);
     }
 }

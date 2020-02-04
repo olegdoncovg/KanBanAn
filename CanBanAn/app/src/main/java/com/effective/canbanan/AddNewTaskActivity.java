@@ -7,15 +7,24 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.effective.canbanan.datamodel.SortOption;
+import com.effective.canbanan.datamodel.TasksDataModel;
 import com.effective.canbanan.util.DialogUtil;
+
+import java.util.List;
 
 public class AddNewTaskActivity extends AppCompatActivity {
     private static final String TAG = AddNewTaskActivity.class.getSimpleName();
+    private static final int LIST_ITEMS_MAX_COUNT = 10;
 
     public static final String EXTRA_TASK_NAME = "task_name";
     public static final String EXTRA_TASK_STATUS = "task_status";
@@ -39,6 +48,22 @@ public class AddNewTaskActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.createTask).setOnClickListener((view) -> {
+            checkDataAndFinish();
+        });
+
+        fillRecentNames(SortOption.POPULAR, R.id.popular_names);
+        fillRecentNames(SortOption.RECENT, R.id.recent_names);
+    }
+
+    private void fillRecentNames(@NonNull SortOption sortOption, @IdRes int listViewId) {
+        ListView listView = findViewById(listViewId);
+        List<String> data = TasksDataModel.instance.getStatisticNames(
+                this, sortOption, LIST_ITEMS_MAX_COUNT);
+        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<>(
+                this, android.R.layout.simple_list_item_1, data);
+        listView.setAdapter(arrayAdapter2);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            taskName.setText(data.get(position));
             checkDataAndFinish();
         });
     }
