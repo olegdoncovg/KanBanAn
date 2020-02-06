@@ -8,5 +8,8 @@
     <color name="bg_item_in_progress">#e0ff70</color>
     <color name="bg_item_to_do_list">#f8bBb0</color>
     <color name="bg_item_done">#e0ffe0</color>
+    <color name="bg_item_in_progress_blinking">#e0cc70</color>
+    <color name="bg_item_to_do_list_blinking">#ff8B80</color>
+    <color name="bg_item_done_blinking">#90ff90</color>
     <color name="transparent">#00FFFFFF</color>
 </resources>

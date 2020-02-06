@@ -1,6 +1,8 @@
 package com.effective.canbanan.datamodel;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -30,22 +32,32 @@ public class TasksDataModel {
     //For test ONLY/////////////////
     private static Integer lastCreatedTaskId_DEBUG;
 
-    public static void init(Context context, ProviderType providerType, boolean clearStatistic) {
+    public static void initDebugOnly(Context context, ProviderType providerType, boolean clearStatistic) {
         if (!BuildConfig.DEBUG) {
-            throw new IllegalStateException("Tray apply providerType=" + providerType + " in DEBUG mode");
+            throw new IllegalStateException("initDebugOnly: Tray apply providerType=" + providerType + " in DEBUG mode");
         }
         instance.dataProvider = DataProvider.getProvider(providerType);
         if (clearStatistic && instance.dataProvider != null) {
-            Log.w(TAG, "init: clearStatistic");
+            Log.w(TAG, "initDebugOnly: clearStatistic");
             instance.dataProvider.clearStatistic(context);
         }
     }
 
-    public static TaskItem getLastCreatedTaskItem() {
+    public static TaskItem getLastCreatedTaskItemDebugOnly() {
         if (!BuildConfig.DEBUG) {
-            throw new IllegalStateException("Tray getLastCreatedTaskItem in DEBUG mode");
+            throw new IllegalStateException("Tray getLastCreatedTaskItemDebugOnly in DEBUG mode");
         }
         return instance.getTask(lastCreatedTaskId_DEBUG);
+    }
+
+    public static void addNewTaskDebugOnly(@NonNull Context context, String taskName,
+                                           long timeTotal, long timeToStart, TaskStatus status) {
+        if (!BuildConfig.DEBUG) {
+            throw new IllegalStateException("Tray addNewTaskDebugOnly in DEBUG mode");
+        }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            instance.addNewTask(context, taskName, timeTotal, timeToStart, status);
+        });
     }
     //////////////////////////////////
 
@@ -68,6 +80,11 @@ public class TasksDataModel {
             if (item.status == status) {
                 tasks.add(item);
             }
+        }
+        if (status == TaskStatus.IN_PROGRESS) {
+            tasks.sort((o1, o2) -> (int) (o1.timeStartActive - o2.timeStartActive));
+        } else {
+            tasks.sort((o1, o2) -> (int) (o2.timeTotal - o1.timeTotal));
         }
         return tasks;
     }
@@ -98,6 +115,25 @@ public class TasksDataModel {
         lastCreatedTaskId_DEBUG = id;
 
         final TaskItem newTask = new TaskItem(id, taskName, status);
+        mTasks.put(id, newTask);
+        dataProvider.postStatisticInfo(context, StatisticType.CREATE_NEW_TASK, newTask, false);
+
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
+    }
+
+    //Method was added for implement debug addNewTask method
+    private void addNewTask(@NonNull Context context, String taskName,
+                            long timeTotal, long timeToStart, TaskStatus status) {
+        final int id = generateId();
+        if (mTasks.containsKey(id)) {
+            throw new IllegalArgumentException("Duplicate task ID");
+        }
+        if (timeToStart != 0 && status != TaskStatus.IN_PROGRESS) {
+            throw new IllegalArgumentException("Duplicate task ID");
+        }
+        lastCreatedTaskId_DEBUG = id;
+
+        final TaskItem newTask = new TaskItem(id, taskName, timeTotal, timeToStart, status);
         mTasks.put(id, newTask);
         dataProvider.postStatisticInfo(context, StatisticType.CREATE_NEW_TASK, newTask, false);
 

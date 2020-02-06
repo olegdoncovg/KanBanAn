@@ -29,7 +29,7 @@ public class SuperTest {
     public void before() {
         Log.i(TAG, "before");
         debugCounter = 0;
-        TasksDataModel.init(getContext(), ProviderType.DEBUG, true);
+        TasksDataModel.initDebugOnly(getContext(), ProviderType.DEBUG, true);
     }
 
     protected static Context getContext() {

@@ -13,6 +13,9 @@ import com.google.gson.GsonBuilder;
 
 public class TaskItem {
     private static final String TAG = TaskItem.class.getSimpleName();
+
+    private static long TIME_TO_START_BLINKING = 1000 * 60 * 20;//10 minutes
+
     public final int id;
     public final String name;
     /**
@@ -117,6 +120,13 @@ public class TaskItem {
         }
         sb.append(hours).append(':').append(min).append(':').append(sec);
         return sb.toString();
+    }
+
+    public boolean isBlinking() {
+        if (timeStartActive == 0) {
+            return false;
+        }
+        return timeStartActive + TIME_TO_START_BLINKING < System.currentTimeMillis();
     }
 
     //Internal class just to work with JSON

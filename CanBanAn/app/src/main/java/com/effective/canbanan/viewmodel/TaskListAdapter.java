@@ -54,7 +54,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
 
     //Probably will be applied only for TaskStatus.IN_PROGRESS
     public Consumer<Long> getTimeUpdateListener() {
-        return currentTime -> notifyDataSetChanged();
+        return currentTime -> {
+            TaskViewHolder.setBlinkingStatus((int) ((currentTime / 1000) % 2));
+            TaskListAdapter.this.notifyDataSetChanged();
+        };
     }
 
 //    public enum ItemType {

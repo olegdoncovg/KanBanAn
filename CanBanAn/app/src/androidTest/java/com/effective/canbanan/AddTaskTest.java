@@ -9,6 +9,7 @@ import androidx.test.filters.LargeTest;
 import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 import com.effective.canbanan.datamodel.TasksDataModel;
+import com.effective.canbanan.util.TimeUtil;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,9 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -56,6 +59,39 @@ public class AddTaskTest extends SuperTest {
     }
 
     @Test
+    public void addBlinkingTask() {
+        Log.i(TAG, "addBlinkingTask");
+        SystemClock.sleep(100);
+
+        String taskNameBlinking = "taskBlinkingBefore_" + debugCounter++;
+        String taskName = "taskBlinkingAfter_" + debugCounter++;
+        long time = System.currentTimeMillis();
+        long timeTotal = time - TimeUtil.getTimeMillis(99, 0, 0);
+        long timeActive_21min_BeforeNow = time - TimeUtil.getTimeMillis(0, 21, 0);
+        long timeActive_9min_BeforeNow = time - TimeUtil.getTimeMillis(0, 9, 0);
+
+        TasksDataModel.addNewTaskDebugOnly(getContext(),
+                taskName, timeTotal, timeActive_9min_BeforeNow, TaskStatus.IN_PROGRESS);
+        SystemClock.sleep(100);
+        final TaskItem task_9min_BeforeNow = TasksDataModel.getLastCreatedTaskItemDebugOnly();
+
+        TasksDataModel.addNewTaskDebugOnly(getContext(),
+                taskName, timeTotal, 0, TaskStatus.DONE);
+        SystemClock.sleep(100);
+        final TaskItem task_21min_BeforeNow_DONE = TasksDataModel.getLastCreatedTaskItemDebugOnly();
+
+        TasksDataModel.addNewTaskDebugOnly(getContext(),
+                taskNameBlinking, timeTotal, timeActive_21min_BeforeNow, TaskStatus.IN_PROGRESS);
+        SystemClock.sleep(100);
+        final TaskItem task_21min_BeforeNow = TasksDataModel.getLastCreatedTaskItemDebugOnly();
+
+        assertFalse("task_21min_BeforeNow_DONE", task_21min_BeforeNow_DONE.isBlinking());
+        assertTrue("task_21min_BeforeNow IN_PROGRESS", task_21min_BeforeNow.isBlinking());
+        assertFalse("task_9min_BeforeNow IN_PROGRESS", task_9min_BeforeNow.isBlinking());
+    }
+
+
+    @Test
     public void addNewTask() {
         Log.i(TAG, "addNewTask");
         SystemClock.sleep(100);
@@ -72,7 +108,7 @@ public class AddTaskTest extends SuperTest {
     //test for timer started (Only after add new task)
     //Long period: 1100 ms
     static void checkIfTimerStartedLong() {
-        TaskItem taskItem = TasksDataModel.getLastCreatedTaskItem();
+        TaskItem taskItem = TasksDataModel.getLastCreatedTaskItemDebugOnly();
         TaskStatus status = taskItem.status;
         String timeS1 = taskItem.getCurrentTime(getContext());
         SystemClock.sleep(1100);
@@ -87,7 +123,7 @@ public class AddTaskTest extends SuperTest {
 
     //test for timer started (Only after add new task)
     static void checkIfTimerStartedString(TaskStatus status) {
-        TaskItem taskItem = TasksDataModel.getLastCreatedTaskItem();
+        TaskItem taskItem = TasksDataModel.getLastCreatedTaskItemDebugOnly();
         long time1 = taskItem.getCurrentTimeInLong();
         SystemClock.sleep(100);
         long time2 = taskItem.getCurrentTimeInLong();

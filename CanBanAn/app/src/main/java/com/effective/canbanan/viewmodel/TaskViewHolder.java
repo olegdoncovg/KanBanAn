@@ -15,6 +15,12 @@ import com.effective.canbanan.datamodel.TaskItem;
 class TaskViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = TaskViewHolder.class.getSimpleName();
 
+    private static int blinkingStatus = 0;
+
+    public static void setBlinkingStatus(int status) {
+        blinkingStatus = status;
+    }
+
     public final TextView textTitle;
     public final TextView textTime;
     @NonNull
@@ -63,7 +69,9 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 
         textTitle.setText(taskItem.name);
         textTime.setText(taskItem.getCurrentTime(context));
-        mainView.setBackgroundColor(mainView.getContext().getColor(taskItem.status.getColorId()));
+        mainView.setBackgroundColor(mainView.getContext().getColor(
+                taskItem.isBlinking() && (blinkingStatus % 2 == 1) ?
+                        taskItem.status.getBlinkingColorId() : taskItem.status.getColorId()));
     }
 
     public void setTransparency(boolean transparent) {
