@@ -59,9 +59,9 @@ public class AddNewTaskActivity extends AppCompatActivity {
         ListView listView = findViewById(listViewId);
         List<String> data = TasksDataModel.instance.getStatisticNames(
                 this, sortOption, LIST_ITEMS_MAX_COUNT);
-        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<>(
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 this, R.layout.recent_name_item, data);
-        listView.setAdapter(arrayAdapter2);
+        listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             taskName.setText(data.get(position));
             checkDataAndFinish();

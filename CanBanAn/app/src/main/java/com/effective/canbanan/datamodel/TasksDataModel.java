@@ -194,4 +194,18 @@ public class TasksDataModel {
                 return new ArrayList<>();
         }
     }
+
+    public void collectActiveTime(@NonNull Context context, final TaskItem taskToChange) {
+        final TaskItem task = mTasks.get(taskToChange.id);
+        if (task == null) {
+            Log.e(TAG, "collectActiveTime: Task " + taskToChange + " not exist in TaskDataModel");
+            return;
+        }
+
+        final long time = System.currentTimeMillis();
+        final long activeTime = time - task.timeStartActive;
+        mTasks.put(task.id,
+                new TaskItem(task.id, task.name, task.timeTotal + activeTime, time, task.status));
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
+    }
 }

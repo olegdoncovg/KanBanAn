@@ -5,4 +5,8 @@
         android:id="@+id/removeItem"
         android:title="@string/remove_task"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/approaches"
+        android:title="@string/approaches_to_fast_resolution"
+        app:showAsAction="always" />
 </menu>

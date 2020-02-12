@@ -86,8 +86,14 @@ public class MainActivity extends AppCompatActivity {
                 }, null);
                 return true;
             }
+            if (item.getItemId() == R.id.approaches) {
+                DialogUtil.showTaskOptionDialog(MainActivity.this, this::updateUI, taskItem);
+                return true;
+            }
             return false;
         });
+        popupMenu.getMenu().findItem(R.id.approaches).setVisible(taskItem.status == TaskStatus.IN_PROGRESS);
+
         popupMenu.show();
     }
 

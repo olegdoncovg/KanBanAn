@@ -11,6 +11,10 @@ import java.util.function.Consumer;
 public class TickTimer {
     private static final String TAG = TickTimer.class.getSimpleName();
 
+    public static long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
     private final List<Consumer<Long>> timeUpdateListeners = new ArrayList<>();
 
     public void addTickListener(Consumer<Long> timeUpdateListener) {
