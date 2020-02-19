@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.effective.canbanan.BuildConfig;
+import com.effective.canbanan.TickTimer;
 import com.effective.canbanan.backend.DataProvider;
 import com.effective.canbanan.backend.ProviderType;
 import com.effective.canbanan.backend.StatisticItem;
@@ -69,7 +70,7 @@ public class TasksDataModel {
         }
     }
 
-    private TaskItem getTask(int taskId) {
+    public TaskItem getTask(int taskId) {
         return mTasks.get(taskId);
     }
 
@@ -104,7 +105,11 @@ public class TasksDataModel {
     }
 
     private int generateId() {
-        return (int) System.currentTimeMillis();
+        int id = (int) TickTimer.currentTimeMillis();
+        while (mTasks.containsKey(id)) {
+            id++;
+        }
+        return id;
     }
 
     public void addNewTask(@NonNull Context context, String taskName, TaskStatus status) {
@@ -202,7 +207,7 @@ public class TasksDataModel {
             return;
         }
 
-        final long time = System.currentTimeMillis();
+        final long time = TickTimer.currentTimeMillis();
         final long activeTime = time - task.timeStartActive;
         mTasks.put(task.id,
                 new TaskItem(task.id, task.name, task.timeTotal + activeTime, time, task.status));

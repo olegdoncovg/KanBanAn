@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.effective.canbanan.TickTimer;
 import com.effective.canbanan.datamodel.TaskItem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +19,7 @@ public class StatisticItem {
     public final TaskItem taskItem;
 
     public StatisticItem(StatisticType statisticType, TaskItem taskItem) {
-        this(statisticType, taskItem, System.currentTimeMillis());
+        this(statisticType, taskItem, TickTimer.currentTimeMillis());
     }
 
     private StatisticItem(StatisticType statisticType, TaskItem taskItem, long timeToCollect) {

@@ -1,6 +1,7 @@
 package com.effective.canbanan.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
 //                rowView.setBackgroundColor(isActive ?
 //                        rowView.getContext().getColor(R.color.bg_item_active) :
 //                        rowView.getContext().getColor(R.color.bg_item_passive));
-                onItemAction.onContextMenuShown(rowView, taskItem);
+                performClick(onItemAction);
             }
         });
 //        rowView.setOnTouchListener(new View.OnTouchListener() {
@@ -62,6 +63,15 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
             Dropper.instance.onItemSelectToMove(TaskViewHolder.this, taskItem);
             return false;
         });
+    }
+
+    public void performClick(@NonNull final IOnItemActions onItemAction) {
+        if (mainView == null) {
+            Log.e(TAG, "performClick: Failed call mainView=null");
+            return;
+        }
+
+        onItemAction.onContextMenuShown(mainView, taskItem);
     }
 
     public void bind(Context context, TaskItem taskItem) {

@@ -174,7 +174,7 @@ public class Dropper {
 //    }
 //
 //    private boolean skipTouch() {
-//        long time = System.currentTimeMillis();
+//        long time = TickTimer.currentTimeMillis();
 //        long diff = time - lastTouchEvent;
 //        if (diff < LAUNCH_EVENT_TIME) {
 //            return true;

@@ -1,5 +1,7 @@
 package com.effective.canbanan;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -65,7 +67,7 @@ public class AddTaskTest extends SuperTest {
 
         String taskNameBlinking = "taskBlinkingBefore_" + debugCounter++;
         String taskName = "taskBlinkingAfter_" + debugCounter++;
-        long time = System.currentTimeMillis();
+        long time = TickTimer.currentTimeMillis();
         long timeTotal = time - TimeUtil.getTimeMillis(99, 0, 0);
         long timeActive_21min_BeforeNow = time - TimeUtil.getTimeMillis(0, 21, 0);
         long timeActive_9min_BeforeNow = time - TimeUtil.getTimeMillis(0, 9, 0);
@@ -137,7 +139,15 @@ public class AddTaskTest extends SuperTest {
         }
     }
 
+
     static void addNewTask(TaskStatus status, String taskName) {
+        addNewTask(status, taskName, true);
+    }
+
+    /**
+     * @param checkTimerForStart false only if we use TickTimer.setCurrentTimeMillisDebugOnly
+     */
+    static void addNewTask(TaskStatus status, String taskName, boolean checkTimerForStart) {
         Log.i(TAG, "addNewTask: status=" + status);
         SystemClock.sleep(100);
         final int tasksAmount = TasksDataModel.instance.getTasks(status).size();
@@ -149,10 +159,19 @@ public class AddTaskTest extends SuperTest {
         onView(withId(R.id.enter_task_name)).perform(pressImeActionButton());
         onView(withId(R.id.createTask)).perform(click());
 
-        checkIfTimerStartedLong();
+        if (checkTimerForStart) {
+            checkIfTimerStartedLong();
+        }
 
         SystemClock.sleep(100);
         assertEquals(TasksDataModel.instance.getTasks(status).size(), tasksAmount + 1);
+    }
+
+    public static void showContextMenuForTask(MainActivity activity, final TaskItem createdTask) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            activity.performClickOnTask(createdTask);
+        });
+        SystemClock.sleep(200);
     }
 
     @Test

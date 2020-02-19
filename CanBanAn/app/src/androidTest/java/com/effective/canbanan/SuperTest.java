@@ -9,6 +9,7 @@ import androidx.test.rule.ActivityTestRule;
 import com.effective.canbanan.backend.ProviderType;
 import com.effective.canbanan.datamodel.TasksDataModel;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,10 +31,20 @@ public class SuperTest {
         Log.i(TAG, "before");
         debugCounter = 0;
         TasksDataModel.initDebugOnly(getContext(), ProviderType.DEBUG, true);
+        TickTimer.setCurrentTimeMillisDebugOnly(0);
+    }
+
+    @After
+    public void after() {
+        TickTimer.setCurrentTimeMillisDebugOnly(0);
     }
 
     protected static Context getContext() {
         return InstrumentationRegistry.getInstrumentation().getTargetContext();
+    }
+
+    protected MainActivity getActivity() {
+        return activityMainRule.getActivity();
     }
 
     @Test

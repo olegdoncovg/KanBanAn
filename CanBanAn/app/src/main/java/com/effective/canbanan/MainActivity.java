@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CODE_REQUEST_NEW_TASK = 111;
 
     private List<UiTaskList> uiTaskList = new ArrayList<>();
+    private PopupMenu contextMenu;
 
     private final IOnItemActions onItemActions = new IOnItemActions() {
         @Override
@@ -70,15 +71,27 @@ public class MainActivity extends AppCompatActivity {
         updateData();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (contextMenu != null) {
+            contextMenu.dismiss();
+        }
+    }
+
     private final TickTimer tickTimer = new TickTimer();
 
     public void showItemContextMenu(@NonNull View v, TaskItem taskItem) {
         Activity activity = this;
+        if (contextMenu != null) {
+            contextMenu.dismiss();
+            contextMenu = null;
+        }
 
         Context wrapper = new ContextThemeWrapper(activity, R.style.popup_menu_style);
-        PopupMenu popupMenu = new PopupMenu(wrapper, v);
-        popupMenu.inflate(R.menu.item_menu);
-        popupMenu.setOnMenuItemClickListener(item -> {
+        contextMenu = new PopupMenu(wrapper, v);
+        contextMenu.inflate(R.menu.item_menu);
+        contextMenu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.removeItem) {
                 DialogUtil.showYesNoDialog(activity, R.string.remove_all_item, () -> {
                     TasksDataModel.instance.removeTask(this, taskItem);
@@ -92,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-        popupMenu.getMenu().findItem(R.id.approaches).setVisible(taskItem.status == TaskStatus.IN_PROGRESS);
+        contextMenu.getMenu().findItem(R.id.approaches).setVisible(taskItem.status == TaskStatus.IN_PROGRESS);
 
-        popupMenu.show();
+        contextMenu.show();
     }
 
     private void updateData() {
@@ -148,5 +161,13 @@ public class MainActivity extends AppCompatActivity {
                 onItemActions, tickTimer));
         uiTaskList.add(new UiTaskList(this, TaskStatus.DONE, R.id.done_task_list,
                 onItemActions, tickTimer));
+    }
+
+    public void performClickOnTask(TaskItem taskItem) {
+        for (UiTaskList taskList : uiTaskList) {
+            if (taskList.performClick(taskItem)) {
+                break;
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.effective.canbanan.TickTimer;
+import com.effective.canbanan.datamodel.TaskItem;
 import com.effective.canbanan.datamodel.TaskStatus;
 
 public class UiTaskList {
@@ -45,5 +46,13 @@ public class UiTaskList {
 
     public void updateUI() {
         adapter.updateData();
+    }
+
+    public boolean contain(TaskItem taskItem) {
+        return adapter.contain(taskItem);
+    }
+
+    public boolean performClick(TaskItem taskItem) {
+        return adapter.performClick(recyclerView, taskItem);
     }
 }

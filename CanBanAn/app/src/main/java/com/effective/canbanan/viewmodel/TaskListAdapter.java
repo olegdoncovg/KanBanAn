@@ -60,6 +60,32 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskViewHolder> {
         };
     }
 
+    public boolean contain(TaskItem taskItem) {
+        for (TaskItem item : values) {
+            if (item.id == taskItem.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean performClick(RecyclerView ownerRecyclerView, TaskItem taskItem) {
+        for (int pos = 0; pos < values.size(); pos++) {
+            TaskItem item = values.get(pos);
+            if (item.id == taskItem.id) {
+                ownerRecyclerView.scrollToPosition(pos);
+                RecyclerView.ViewHolder holder = ownerRecyclerView.findViewHolderForAdapterPosition(pos);
+                if (!(holder instanceof TaskViewHolder)) {
+                    return false;
+                }
+
+                ((TaskViewHolder) holder).performClick(onItemAction);
+                return true;
+            }
+        }
+        return false;
+    }
+
 //    public enum ItemType {
 //        TASK
 //    }

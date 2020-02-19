@@ -8,13 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.effective.canbanan.R;
+import com.effective.canbanan.TickTimer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class TaskItem {
     private static final String TAG = TaskItem.class.getSimpleName();
 
-    private static long TIME_TO_START_BLINKING = 1000 * 60 * 20;//10 minutes
+    public static long TIME_TO_START_BLINKING = 1000 * 60 * 20;//10 minutes
 
     public final int id;
     public final String name;
@@ -23,7 +24,7 @@ public class TaskItem {
      */
     public final long timeTotal;
     /**
-     * Dynamic part of time = System.currentTimeMillis() - timeStartActive
+     * Dynamic part of time = TickTimer.currentTimeMillis() - timeStartActive
      * timeStartActive=0 if status!= IN_PROGRESS
      */
     public final long timeStartActive;
@@ -55,7 +56,7 @@ public class TaskItem {
     }
 
     public TaskItem(int id, String taskName, TaskStatus status) {
-        this(id, taskName, 0, status == TaskStatus.IN_PROGRESS ? System.currentTimeMillis() : 0, status);
+        this(id, taskName, 0, status == TaskStatus.IN_PROGRESS ? TickTimer.currentTimeMillis() : 0, status);
     }
 
     public TaskItem(int id, String name, long timeTotal, long timeToStart, TaskStatus status) {
@@ -72,12 +73,12 @@ public class TaskItem {
 
         if (task.status != newStatus) {
             if (timeToStart != 0) {
-                long timeDiff = System.currentTimeMillis() - timeToStart;
+                long timeDiff = TickTimer.currentTimeMillis() - timeToStart;
                 timeTotal += timeDiff;
                 Log.d(TAG, "construct: timeTotal=" + longToTime(null, timeTotal) +
                         ", timeDiff=" + longToTime(null, timeDiff));
             }
-            timeToStart = newStatus == TaskStatus.IN_PROGRESS ? System.currentTimeMillis() : 0;
+            timeToStart = newStatus == TaskStatus.IN_PROGRESS ? TickTimer.currentTimeMillis() : 0;
         }
 
         this.id = task.id;
@@ -91,14 +92,25 @@ public class TaskItem {
         if (timeStartActive == 0) {
             return timeTotal;
         }
-        return timeTotal + System.currentTimeMillis() - timeStartActive;
+        return timeTotal + TickTimer.currentTimeMillis() - timeStartActive;
+    }
+
+    public long getDynamicPartTime() {
+        if (timeStartActive == 0) {
+            return 0;
+        }
+        return TickTimer.currentTimeMillis() - timeStartActive;
+    }
+
+    public long getStaticPartTime() {
+        return timeTotal;
     }
 
     public String getCurrentTime(Context context) {
         if (timeStartActive == 0) {
             return longToTime(context, timeTotal);
         }
-        final long time = System.currentTimeMillis() - timeStartActive;
+        final long time = TickTimer.currentTimeMillis() - timeStartActive;
         return longToTime(context, timeTotal) + "\n" + longToTime(context, time);
     }
 
@@ -126,7 +138,7 @@ public class TaskItem {
         if (timeStartActive == 0) {
             return false;
         }
-        return timeStartActive + TIME_TO_START_BLINKING < System.currentTimeMillis();
+        return timeStartActive + TIME_TO_START_BLINKING < TickTimer.currentTimeMillis();
     }
 
     //Internal class just to work with JSON

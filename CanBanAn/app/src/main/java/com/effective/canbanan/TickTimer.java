@@ -11,8 +11,20 @@ import java.util.function.Consumer;
 public class TickTimer {
     private static final String TAG = TickTimer.class.getSimpleName();
 
+    private static long currentTimeMillis = 0;
+
+    public static void setCurrentTimeMillisDebugOnly(long currentTimeMillis) {
+        if (!BuildConfig.DEBUG) {
+            throw new IllegalStateException("setCurrentTimeMillis: Tray apply currentTimeMillis=" + currentTimeMillis + " in DEBUG mode");
+        }
+        TickTimer.currentTimeMillis = currentTimeMillis;
+    }
+
     public static long currentTimeMillis() {
-        return System.currentTimeMillis();
+        if (currentTimeMillis != 0 && !BuildConfig.DEBUG) {
+            throw new IllegalStateException("setCurrentTimeMillis: Tray apply currentTimeMillis=" + currentTimeMillis + " in DEBUG mode");
+        }
+        return currentTimeMillis != 0 ? currentTimeMillis : System.currentTimeMillis();
     }
 
     private final List<Consumer<Long>> timeUpdateListeners = new ArrayList<>();
@@ -30,7 +42,7 @@ public class TickTimer {
             @Override
             public void run() {
                 activity.runOnUiThread(() -> {
-                    final long time = System.currentTimeMillis();
+                    final long time = TickTimer.currentTimeMillis();
                     for (Consumer<Long> longConsumer : timeUpdateListeners) {
                         if (longConsumer == null) {
                             continue;
