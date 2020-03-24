@@ -104,6 +104,16 @@ public class TasksDataModel {
         dataProvider.updateServerInfo(context, mTasks.values(), false);
     }
 
+    public void clearTime(@NonNull Context context, TaskStatus status) {
+        List<TaskItem> toRemove = getTasks(status);
+        long time = status == TaskStatus.IN_PROGRESS ? TickTimer.currentTimeMillis() : 0;
+        for (TaskItem item : toRemove) {
+            TaskItem newItem = new TaskItem(item.id, item.name, 0, time, item.status);
+            TaskItem rem = mTasks.put(item.id, newItem);
+        }
+        dataProvider.updateServerInfo(context, mTasks.values(), false);
+    }
+
     private int generateId() {
         int id = (int) TickTimer.currentTimeMillis();
         while (mTasks.containsKey(id)) {

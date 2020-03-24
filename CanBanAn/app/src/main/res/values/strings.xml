@@ -5,6 +5,7 @@
     <string name="well_done">Well Done!</string>
     <string name="add_item">Add new Task</string>
     <string name="remove_all_item">Remove all items</string>
+    <string name="clear_time_for_all">Clear time for all</string>
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
     <string name="days">days</string>

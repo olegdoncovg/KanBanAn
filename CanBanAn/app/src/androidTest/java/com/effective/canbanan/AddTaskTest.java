@@ -16,6 +16,8 @@ import com.effective.canbanan.util.TimeUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
@@ -183,6 +185,39 @@ public class AddTaskTest extends SuperTest {
         createNewTasks(TaskStatus.IN_PROGRESS);
         SystemClock.sleep(100);
         createNewTasks(TaskStatus.DONE);
+
+        //Clear time for all test
+        SystemClock.sleep(100);
+        clearTimeForAll(TaskStatus.TO_DO);
+        clearTimeForAll(TaskStatus.IN_PROGRESS);
+        clearTimeForAll(TaskStatus.DONE);
+    }
+
+    private static void clearTimeForAll(TaskStatus status) {
+        Log.i(TAG, "removeAll: status=" + status);
+        final int countBefore = TasksDataModel.instance.getTasks(status).size();
+        onView(withId(status.getViewId())).perform(click());
+        onView(withText(R.string.clear_time_for_all)).perform(click());
+        onView(withText(R.string.ok)).perform(click());
+
+        SystemClock.sleep(100);
+        final List<TaskItem> tasks = TasksDataModel.instance.getTasks(status);
+        assertEquals(countBefore, tasks.size());
+
+        long time = TickTimer.currentTimeMillis();
+        for (int i = 0; i < tasks.size(); i++) {
+            final TaskItem item = tasks.get(i);
+            if (status == TaskStatus.IN_PROGRESS) {
+                assertTrue("clearTimeForAll: after clear DynamicPartTime for i=" + i + ", " + item,
+                        item.getDynamicPartTime() > (TickTimer.currentTimeMillis() - time));
+            } else {
+                assertEquals("clearTimeForAll: after clear DynamicPartTime for i=" + i + ", " + item,
+                        item.getDynamicPartTime(), 0);
+            }
+            assertEquals("clearTimeForAll: after clear StaticPartTime for i=" + i + ", " + item,
+                    item.getStaticPartTime(), 0);
+        }
+        SystemClock.sleep(100);
     }
 
     static void createNewTasks(TaskStatus status) {

@@ -85,6 +85,13 @@ public class Dropper {
                 }
                 return true;
             }
+            if (item.getItemId() == R.id.clearTimeForAll) {
+                DialogUtil.showYesNoDialog(activity, R.string.clear_time_for_all, () -> {
+                    TasksDataModel.instance.clearTime(activity, status);
+                    updateUI.run();
+                }, null);
+                return true;
+            }
             if (item.getItemId() == R.id.removeAll) {
                 DialogUtil.showYesNoDialog(activity, R.string.remove_all_item, () -> {
                     TasksDataModel.instance.removeTasks(activity, status);
