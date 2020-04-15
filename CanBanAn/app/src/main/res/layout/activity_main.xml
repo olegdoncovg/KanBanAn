@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
+                android:lines="1"
                 android:padding="@dimen/list_item_interval"
                 android:text="@string/to_do_list" />
 
@@ -35,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
+                android:lines="1"
                 android:padding="@dimen/list_item_interval"
                 android:text="@string/in_progress" />
 
@@ -47,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
+                android:lines="1"
                 android:padding="@dimen/list_item_interval"
                 android:text="@string/well_done" />
 
